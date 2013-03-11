@@ -4,6 +4,16 @@ window.onload = function() {
 
  core.preload('chara1.png');
  core.fps = 15;
+ core.makeScene =function(){
+	 var scene = new Scene();
+	 var bg = new Sprite(32,32);
+	 bg.backgroundColor="yellow";
+	 bg.on('touchstart',function(){
+		 core.popScene(scene);
+	 });
+	 scene.addChild(bg);
+return scene;
+ }
  core.onload = function() {
 
  var bearcount=0;
@@ -224,7 +234,7 @@ this.frame=8;
 		score2l.text=score2;
 		core.rootScene.removeChild(bears[1][i]);
 		delete bears[1][i];
-		 // core.end();
+		core.pushScene(core.makeScene());
 		}}});
     }
    core.debug(); 
