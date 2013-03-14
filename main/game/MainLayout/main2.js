@@ -1,10 +1,10 @@
-﻿enchant();
+enchant();
 
 
 window.onload = function(){
 	var core = new Core(640,480);
 core.preload('chara1.png');
-core.preload('layout.png');
+core.preload('layout.jpg');
 core.preload('skill1.png','skill2.png');
 core.fps =5;
 var LIMIT_TIME = 60;
@@ -13,7 +13,7 @@ var LIMIT_TIME = 60;
 		var Background=new Sprite(640,640);
 				Background.x  = 0;
 				Background.y  = 0;
-				Background.image = core.assets['layout.png'];
+				Background.image = core.assets['layout.jpg'];
 				core.rootScene.addChild(Background);
 		var friendSet=0;
 		//味方のセット数の管理
@@ -21,7 +21,7 @@ var LIMIT_TIME = 60;
 		//味方のキャラ数を管理
 		var friendCharaNumber=0;
 		//キャラの出撃状態を管理
-		var friendCharaStatus =[];
+		var CharaStatus =[[],[],];
 		//味方キャラの状態を管理する配列
 		var friendScore=0;
 		//味方の獲得した旗の数
@@ -31,7 +31,7 @@ var LIMIT_TIME = 60;
 		//敵のキャラ数を管理
 		var enemyCharaNumber=0;
 		//敵キャラの出撃状態を管理
-		var enemyCharaStatus =[];
+		//var enemyCharaStatus =[];
 		//敵キャラの状態を管理する配列
 		var enemyScore=0;
 		//敵キャラの獲得した旗の数
@@ -174,15 +174,15 @@ var charaRet=[10,15,15,20,15,10];
 		});
 
 //時間ラベル
-		var timelabel       = new Label();
-			timelabel.x     = 290; 
-			timelabel.y     = 10;
-			timelabel.font  = "40px 'Arial'";
-			timelabel.addEventListener("enterframe",function(){
-				time = LIMIT_TIME - parseInt(core.frame/core.fps)+"";
-				this.text =time;
-				});
-	core.rootScene.addChild(timelabel);
+	//	var timelabel       = new Label();
+		//	timelabel.x     = 290; 
+			//timelabel.y     = 10;
+			//timelabel.font  = "40px 'Arial'";
+			//timelabel.addEventListener("enterframe",function(){
+			//	time = LIMIT_TIME - parseInt(core.frame/core.fps)+"";
+				//this.text =time;
+				//});
+//	core.rootScene.addChild(timelabel);
 
 //旗関係ラベル
 		var Hata = Class.create(Sprite,{
@@ -234,9 +234,9 @@ var charaRet=[10,15,15,20,15,10];
 			}
 		});
 //コース
-		var coursu = new Coursu(90,120,470,90,"red")
-		var coursu = new Coursu(90,210,470,90,"yellow")
-		var coursu = new Coursu(90,300,470,90,"blue")
+	//	var coursu = new Coursu(90,120,470,90,"red")
+		//var coursu = new Coursu(90,210,470,90,"yellow")
+		//var coursu = new Coursu(90,300,470,90,"blue")
 
 //ゲージの土台--------------------------------------------------
 		//味方

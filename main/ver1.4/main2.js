@@ -1,10 +1,10 @@
 enchant();
 window.onload = function() {
- var core = new Core(384, 320);
+ var core = new Core(640, 480);
 
- core.preload('chara1.png');
+ core.preload('chara1.png','layout.jpg');
  core.fps = 15;
- core.makeScene =function(){
+ /*core.makeScene =function(){
 	 var scene = new Scene();
 	 var bg = new Sprite(32,32);
 	 bg.backgroundColor="yellow";
@@ -13,19 +13,22 @@ window.onload = function() {
 	 });
 	 scene.addChild(bg);
 return scene;
- }
+ } */
  core.onload = function() {
-
- var bearcount=0;
- var bearflag=0;
- var bears = [[],[]];
+ var Bg = new Sprite(640,480);
+ Bg.image = core.assets['layout.jpg'];
+ core.rootScene.addChild(Bg);
+ 
+ var Friendcount=0;
+ var Friendflag=0;
+ var Charas = [[],[]];
  var score1=0; 
- var bears2=[];
- var bearflag2=0;
- var bearcount2=0;
+ //var bears2=[];
+ var Enemyflag=0;
+ var Enemycount=0;
  var score2=0;
  var ba=[10,20,30];
- var timeleft=3*core.fps;
+ //var timeleft=3*core.fps;
  var Bearg = Class.create(Sprite, {
  initialize: function(x, y,bearno,team) {
      Sprite.call(this, 32, 32);
@@ -38,26 +41,26 @@ return scene;
      core.rootScene.addChild(this);
      this.on('touchstart',function(){
        if(this.team==0){
-      if(bearcount<5) {
+      if(Friendcount<5) {
        for(var i=0;i<=5;i++){
-        if(bears[this.team][i]==undefined){
-         bearflag=i;
-         bears[this.team][i]=new Bear(this.x,this.y+32);
-          bearcount++;
-         bears[this.team][i].power=this.bearno;    
+        if(Charas[this.team][i]==undefined){
+         Friendflag=i;
+         Charas[this.team][i]=new Bear(this.x,this.y+32);
+          Friendcount++;
+         Charas[this.team][i].power=this.bearno;    
          break;
         }
        }
       }
      }
       if(this.team==1){
-         if(bearcount2<5) {
+         if(Enemycount<5) {
        for(var i=0;i<=5;i++){
-        if(bears[this.team][i]==undefined){
-         bearflag2=i;
-         bears[this.team][i]=new Bear2(this.x,this.y+32);
-          bearcount2++;
-         bears[this.team][i].power=this.bearno;    
+        if(Charas[this.team][i]==undefined){
+         Enemyflag=i;
+         Charas[this.team][i]=new Bear2(this.x,this.y+32);
+          Enemycount++;
+         Charas[this.team][i].power=this.bearno;    
          break;
         }
        }
@@ -67,10 +70,11 @@ return scene;
      });
  }
 });
-      var bearg1 = new Bearg(32, 0,0,0);
-      var bearg2 =new Bearg(32,64,1,0);
-			var bearg3 =new Bearg(32,128,2,0);
-
+var bearg1 = new Bearg(10, 130,0,0);
+var bearg2 =new Bearg(10,180,1,0);
+var bearg3 =new Bearg(10,230,2,0);
+var bearg4 =new Bearg(10,280,1,0);
+var bearg5 =new Bearg(10,330,1,0);
 
 
 
@@ -102,9 +106,15 @@ this.scaleX=-1;
          this.image = core.assets['chara1.png'];
          this.label1 = new Label();
          this.label1.text=this.life+"<br>"+this.power;
-         this.label1.x=32*bearflag;
+         this.label1.x=32*Friendflag;
          this.label1.y=200;
          core.rootScene.addChild(this.label1);
+	 this.on("touchmove",function(e){
+		 this.x=e.x;
+		 this.y=e.y;
+	 });
+	 this.on("touchend",function(e){});
+
          this.addEventListener('enterframe', function() {
           this.x += this.speed;
           this.scaleX=posscale;
@@ -115,17 +125,17 @@ this.scaleX=-1;
       
       
   
-          for(var i in bears[1]){
-            if (this.within(bears[1][i], 10)) {
-             this.life -=bears[1][i].power;
+          for(var i in Charas[1]){
+            if (this.within(Charas[1][i], 10)) {
+             this.life -=Charas[1][i].power;
                   
                   this.label1.text=this.life+"<br>"+this.power;
-             for(j in bears[0]){
-             if(bears[0][j].life<=0){
-             core.rootScene.removeChild(bears[0][j].label1);
-             bearcount--;
-             core.rootScene.removeChild(bears[0][j]);
-             delete bears[0][j];             
+             for(j in Charas[0]){
+             if(Charas[0][j].life<=0){
+             core.rootScene.removeChild(Charas[0][j].label1);
+             Friendcount--;
+             core.rootScene.removeChild(Charas[0][j]);
+             delete Charas[0][j];             
              }}
              
               
@@ -152,22 +162,22 @@ this.scaleX=-1;
      this.image = core.assets['chara1.png'];
 			this.label2 = new Label();
          this.label2.text=this.life+"<br>"+this.power;
-         this.label2.x=32*bearflag2;
+         this.label2.x=32*Enemyflag;
          this.label2.y=230;
          core.rootScene.addChild(this.label2);
      this.scaleX *=-1;
      this.on('enterframe', function() {
           this.x -=3;
-           for(var i in bears[0]){
-            if (this.within(bears[0][i], 10)) {
-                this.life -=bears[0][i].power
+           for(var i in Charas[0]){
+            if (this.within(Charas[0][i], 10)) {
+                this.life -=Charas[0][i].power
                 this.label2.text=this.life+"<br>"+this.power;
-							for(j in bears[1]){
- 							if(bears[1][j].life<=0){
-							core.rootScene.removeChild(bears[1][j].label2);
-							bearcount2--;
-							core.rootScene.removeChild(bears[1][j]);
-							delete bears[1][j];
+							for(j in Charas[1]){
+ 							if(Charas[1][j].life<=0){
+							core.rootScene.removeChild(Charas[1][j].label2);
+							Enemycount--;
+							core.rootScene.removeChild(Charas[1][j]);
+							delete Charas[1][j];
 							}}
 this.frame=8;
              this.tl.moveBy(100,0,10).then(function(){this.frame=defaultframe;
@@ -209,14 +219,14 @@ this.frame=8;
 		wall1.x=352;
 		wall1.backgroundColor="#00F";
     wall1.on('enterframe',function(){
-		for(i in bears[0]){
- 		if(wall1.intersect(bears[0][i])){
-		core.rootScene.removeChild(bears[0][i].label1);
-		bearcount--;
+		for(i in Charas[0]){
+ 		if(wall1.intersect(Charas[0][i])){
+		core.rootScene.removeChild(Charas[0][i].label1);
+		Friendcount--;
 		score1++;
 		score1l.text=score1;
-		core.rootScene.removeChild(bears[0][i]);
-		delete bears[0][i];
+		core.rootScene.removeChild(Charas[0][i]);
+		delete Charas[0][i];
 		}}});
 		core.rootScene.addChild(wall1);
 		wall2 = new Sprite(32,320);
@@ -226,15 +236,15 @@ this.frame=8;
      
               
     wall2.on('enterframe',function(){
-		for(i in bears[1]){
- 		if(wall2.intersect(bears[1][i])){
-		core.rootScene.removeChild(bears[1][i].label2);
-		bearcount2--;
+		for(i in Charas[1]){
+ 		if(wall2.intersect(Charas[1][i])){
+		core.rootScene.removeChild(Charas[1][i].label2);
+		Enemycount--;
 		score2++;
 		score2l.text=score2;
-		core.rootScene.removeChild(bears[1][i]);
-		delete bears[1][i];
-		core.pushScene(core.makeScene());
+		core.rootScene.removeChild(Charas[1][i]);
+		delete Charas[1][i];
+	//*	core.pushScene(core.makeScene());
 		}}});
     }
    core.debug(); 
