@@ -249,7 +249,7 @@ var charaRet=[10,15,15,20,15,10];
 							if(enemyCharaBox[0][j].life<=0){
 								core.rootScene.removeChild(enemyCharaBox[0][j]);
 								enemyCount--;
-								delete enemydCharaBox[1][j]
+								delete enemyCharaBox[1][j]
 						}	}
 					this.frame =8;
 					this.tl.moveBy(100,0,10).then(function(){this.frame=defaultframe});
