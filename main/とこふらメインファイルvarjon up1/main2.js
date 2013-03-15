@@ -174,8 +174,9 @@ var charaRet=[10,15,15,20,15,10];
 					this.tl.moveBy(-100,0,10).then(function(){this.frame=defaultframe});
 					}}
 				});
+//				friendCharaBox[0][friendCharaNumber].on("touchmove",function(e){
 				this.on("touchmove",function(e){
-					this.x = e.x;
+					flag =1;
 					this.y = e.y;
 				});
 				this.on("touchend",function(e){
@@ -313,7 +314,7 @@ var charaRet=[10,15,15,20,15,10];
 					for(var i=0;i<10;i++){					//flagが空いてるのを探すためのfor
 					if(friendCharaBox[this.team][i]==undefined){		//iの値が何も入ってないとき真
 						friendCharaNumber=i;						
-						friendCharaBox[this.team][i]=new Bear(this.x + 10,this.y+10,64,64,"chara1.png");//flagの空いてる場所にクマ召喚
+						friendCharaBox[this.team][i]=new Bear(90,220,64,64,"chara1.png");//flagの空いてる場所にクマ召喚
 						friendCount++;
 						console.log(friendCount);
 						console.log(friendCharaBox[this.team][i]);
