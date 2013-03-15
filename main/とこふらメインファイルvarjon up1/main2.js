@@ -6,7 +6,7 @@ window.onload = function(){
 core.preload('chara1.png');
 core.preload('layout.png');
 core.preload('skill1.png','skill2.png');
-core.fps =5;
+core.fps =15;
 var LIMIT_TIME = 60;
 	core.onload = function(){ 
 //とりあえずの背景
@@ -165,9 +165,10 @@ var charaRet=[10,15,15,20,15,10];
 						this.life -=enemyCharaBox[1][i].power;
 						for(j in friendCharaBox[0]){
 							if(friendCharaBox[0][j].life<=0){
+//delete機能しねえええええええええええええええええええええええええええええええ
 								core.rootScene.removeChild(friendCharaBox[0][j]);
 								friendCount--;
-								delete friendCharaBox[1][j]
+								delete friendCharaBox[0][j]
 						}	}
 					this.frame =3;
 					this.tl.moveBy(-100,0,10).then(function(){this.frame=defaultframe});
@@ -190,9 +191,8 @@ var charaRet=[10,15,15,20,15,10];
 						this.x = 90;
 						this.y = 310;
 					}else{
-//removeChild機能しない。
 						core.rootScene.removeChild(friendCharaBox[0][friendCharaNumber]);
-						flag = 0;
+						friendCount--;
 						delete friendCharaBox[0][friendCharaNumber];
 //						this.remove();
 						
@@ -212,7 +212,7 @@ var charaRet=[10,15,15,20,15,10];
 				this.image = core.assets[photo];
 				this.scaleX=-1;
 				//テストステータス
-				this.life = 10
+				this.life = 100
 				this.power=10
 				this.sp   =10
 				this.on("enterframe",function(){
@@ -236,23 +236,23 @@ var charaRet=[10,15,15,20,15,10];
 							var round = new Round(590,70);
 							//後リセット処理
 						}
-						console.log(friendScore);
-						core.rootScene.removeChild(friendCharaBox[0][friendCharaNumber]);
-						friendCount--;
+						console.log(enemyScore);
+						core.rootScene.removeChild(enemyCharaBox[1][enemyCharaNumber]);
+						enemyCount--;
 						this.remove();
 					}
 					//敵衝突判定
 					for(i in friendCharaBox[0]){
 					if(this.within(friendCharaBox[0][i],10)){
 						this.life -=friendCharaBox[0][i].power;
-						for(j in enemyCharaBox[0]){
-							if(enemyCharaBox[0][j].life<=0){
-								core.rootScene.removeChild(enemyCharaBox[0][j]);
+						for(j in enemyCharaBox[1]){
+							if(enemyCharaBox[1][j].life<=0){
+								core.rootScene.removeChild(enemyCharaBox[1][j]);
 								enemyCount--;
 								delete enemyCharaBox[1][j]
 						}	}
 					this.frame =8;
-					this.tl.moveBy(100,0,10).then(function(){this.frame=defaultframe});
+					this.tl.moveBy(100,0,10).then(function(){this.frame=enemydefaultframe});
 					}}
 				});
 				this.on("touchmove",function(e){
