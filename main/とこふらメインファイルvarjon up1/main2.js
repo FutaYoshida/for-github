@@ -188,7 +188,7 @@ var charaRet=[10,15,15,20,15,10];
 								delete friendCharaBox[0][j]
 						}	}
 					this.frame =3;
-					this.tl.moveBy(-100,0,10).then(function(){this.frame=defaultframe});
+					this.tl.moveBy(-100,0,5).then(function(){this.frame=defaultframe});
 					}}
 				});
 
@@ -253,7 +253,7 @@ var charaRet=[10,15,15,20,15,10];
 								delete enemyCharaBox[1][j]
 						}	}
 					this.frame =8;
-					this.tl.moveBy(100,0,10).then(function(){this.frame=enemydefaultframe});
+					this.tl.moveBy(100,0,5);//.then(function(){this.frame=enemydefaultframe});
 					}}
 				});
 				this.on("touchmove",function(e){
