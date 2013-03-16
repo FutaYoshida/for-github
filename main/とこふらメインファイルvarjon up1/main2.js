@@ -134,10 +134,26 @@ var charaRet=[10,15,15,20,15,10];
 				this.power=10
 				this.sp   =10
 				this.on("enterframe",function(){
-					if (this.flag == 2){
-						this.x +=10;
-						this.frame=defaultframe;
+					if(this.flag == 0){
+						this.sp = 10;			//これがないとthis.yが-の時後ろに行ってしまう
+						this.x +=this.sp;
+						//スナップ処理
+						if(this.y >=120 && this.y <=210 && this.x >= 90){this.y = 130;
+						}else if (this.y >=210 && this.y <=300 && this.x >= 90){this.y = 220;
+						}else if (this.y >=300 && this.y <=390 && this.x >= 90){this.y = 310;
+						}else{
+							core.rootScene.removeChild(friendCharaBox[0][friendCharaNumber]);
+							friendCount--;
+							delete friendCharaBox[0][friendCharaNumber];
+						}
 					}
+					if(this.flag ==1){
+						this.y +=this.sp;
+						if(this.y<120){this.sp = 10}
+						if(this.y>326){this.sp *=-1}
+					}
+						this.frame=defaultframe;
+
 					//旗フラグ、衝突判定
 					if(this.intersect(enemywall)){
 						friendScore++;
@@ -154,7 +170,8 @@ var charaRet=[10,15,15,20,15,10];
 							var round = new Round(20,70);
 							//後リセット処理
 						}
-						console.log(friendScore);
+//						console.log(friendScore);
+						console.log(friendCharaNumber);
 						core.rootScene.removeChild(friendCharaBox[0][friendCharaNumber]);
 						friendCount--;
 						delete friendCharaBox[0][friendCharaNumber];
@@ -174,35 +191,14 @@ var charaRet=[10,15,15,20,15,10];
 					this.tl.moveBy(-100,0,10).then(function(){this.frame=defaultframe});
 					}}
 				});
-//				friendCharaBox[0][friendCharaNumber].on("touchmove",function(e){
-				
+
 				this.on("touchstart",function(e){
-					flag =1;
+						if(this.flag==0){
+							this.flag=1;
+						}else{
+							this.flag=0;
+						}
 					});
-				this.on("touchmove",function(e){
-					flag =1;
-					this.y = e.y;
-				});
-				this.on("touchend",function(e){
-					this.flag = 2;
-				//スナップ処理
-					if(this.y >=120 && this.y <=210 && this.x >= 90){
-						this.x = 90;
-						this.y = 130;
-					}else if (this.y >=210 && this.y <=300 && this.x >= 90){
-						this.x = 90;
-						this.y = 220;
-					}else if (this.y >=300 && this.y <=390 && this.x >= 90){
-						this.x = 90;
-						this.y = 310;
-					}else{
-						core.rootScene.removeChild(friendCharaBox[0][friendCharaNumber]);
-						friendCount--;
-						delete friendCharaBox[0][friendCharaNumber];
-//						this.remove();
-						
-					}
-				});
 				core.rootScene.addChild(this);
 			 }
 		});
