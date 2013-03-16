@@ -157,7 +157,7 @@ var charaRet=[10,15,15,20,15,10];
 						console.log(friendScore);
 						core.rootScene.removeChild(friendCharaBox[0][friendCharaNumber]);
 						friendCount--;
-						this.remove();
+						delete friendCharaBox[0][friendCharaNumber];
 					}
 					//敵衝突判定
 					for(i in enemyCharaBox[1]){
@@ -175,6 +175,10 @@ var charaRet=[10,15,15,20,15,10];
 					}}
 				});
 //				friendCharaBox[0][friendCharaNumber].on("touchmove",function(e){
+				
+				this.on("touchstart",function(e){
+					flag =1;
+					});
 				this.on("touchmove",function(e){
 					flag =1;
 					this.y = e.y;
