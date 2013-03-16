@@ -215,12 +215,28 @@ var charaRet=[10,15,15,20,15,10];
 				//テストステータス
 				this.life = 100
 				this.power=10
-				this.sp   =10
+				this.sp   =-10
 				this.on("enterframe",function(){
-					if (this.flag == 2){
-						this.x -=10;
-						this.frame=enemydefaultframe;
+					if(this.flag == 0){
+						this.sp =10;			//これがないとthis.yが-の時後ろに行ってしまう
+						this.x -=this.sp;
+						//スナップ処理
+						if(this.y >=120 && this.y <=210 && this.x >= 90){this.y = 130;
+						}else if (this.y >=210 && this.y <=300 && this.x >= 90){this.y = 220;
+						}else if (this.y >=300 && this.y <=390 && this.x >= 90){this.y = 310;
+						}else{
+							core.rootScene.removeChild(enemyCharaBox[0][enemyCharaNumber]);
+							enemyCount--;
+							delete enemyCharaBox[0][enemyCharaNumber];
+						}
 					}
+					if(this.flag ==1){
+						this.y +=this.sp;
+						if(this.y<120){this.sp = 10}
+						if(this.y>326){this.sp *=-1}
+					}
+						this.frame=enemydefaultframe;
+
 					//旗フラグ、衝突判定
 					if(this.intersect(friendwall)){
 						enemyScore++;
@@ -252,34 +268,17 @@ var charaRet=[10,15,15,20,15,10];
 								enemyCount--;
 								delete enemyCharaBox[1][j]
 						}	}
-					this.frame =8;
-					this.tl.moveBy(100,0,5);//.then(function(){this.frame=enemydefaultframe});
+						this.frame =8;
+						this.tl.moveBy(100,0,5).then(function(){this.frame=enemydefaultframe});
 					}}
 				});
-				this.on("touchmove",function(e){
-					this.x = e.x;
-					this.y = e.y;
-				});
-				this.on("touchend",function(e){
-					this.flag = 2;
-				//スナップ処理
-					if(this.y >=120 && this.y <=210 && this.x <= 560){
-						this.x = 496;
-						this.y = 130;
-					}else if (this.y >=210 && this.y <=300 && this.x <= 560){
-						this.x = 496;
-						this.y = 220;
-					}else if (this.y >=300 && this.y <=390 && this.x <= 560){
-						this.x = 496;
-						this.y = 310;
+				this.on("touchstart",function(){
+					if(this.flag==0){
+						this.flag=1;
 					}else{
-						core.rootScene.removeChild(enemyCharaBox[1][enemyCharaNumber]);
-						flag = 0;
-						delete enemyCharaBox[1][enemyCharaNumber];
+						this.flag=0;
 					}
-
-				});
-
+					});
 
 				core.rootScene.addChild(this);
 			 }
@@ -325,7 +324,7 @@ var charaRet=[10,15,15,20,15,10];
 					for(var i=0;i<=10;i++){
 					if(enemyCharaBox[this.team][i]==undefined){
 						enemyCharaNumber=i;
-						enemyCharaBox[this.team][i]=new Enemy(this.x,this.y,64,64,"chara1.png");
+						enemyCharaBox[this.team][i]=new Enemy(496,220,64,64,"chara1.png");
 						enemyCount++;
 						break;
 					}}}}
