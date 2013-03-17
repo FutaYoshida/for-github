@@ -59,7 +59,7 @@ return scene;
        }
       }
      }
-      if(this.team==1){
+ /*     if(this.team==1){
          if(Enemycount<5) {
        for(var i=0;i<=5;i++){
         if(Charas[this.team][i]==undefined){
@@ -72,7 +72,7 @@ return scene;
        }
       }
 }
-
+*/
      });
  }
 });
@@ -89,8 +89,28 @@ initialize: function(x,y,bearno,team){
 Bearg.call(this,x,y,bearno,team); 			
 this.frame=0;
 this.scaleX=-1;  
+this.on('enterframe',function(){
+if(this.age%50==rand(50)){
+if(this.team==1){
+         if(Enemycount<5) {
+       for(var i=0;i<=5;i++){
+        if(Charas[this.team][i]==undefined){
+         Enemyflag=i;
+         Charas[this.team][i]=new Bear2(this.x,this.y+32);
+          Enemycount++;
+         Charas[this.team][i].power=this.bearno;    
+         break;
+        }
+       }
+      }
 }
-});
+
+}
+
+});	
+}
+}
+);
 
     var bearg21 = new Bearg2(570,130,0,1);
     var bearg22 = new Bearg2(570,180,0,1);
