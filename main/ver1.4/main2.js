@@ -2,7 +2,13 @@ enchant();
 window.onload = function() {
  var core = new Core(640, 480);
 
- core.preload('chara1.png','layout.jpg');
+ core.preload('chara1.png','layout.jpg','kgen.png');
+ core.preload('bearteam.jpg','blik.jpg','flag.jpg');
+ core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3');
+
+ core.se=Sound.load('crush_01.wav');
+ core.bgm=Sound.load('tengoku_to_jigoku_full.mp3');
+ core.bgm.volume=0.5;
  core.fps = 15;
  /*core.makeScene =function(){
 	 var scene = new Scene();
@@ -31,12 +37,12 @@ return scene;
  //var timeleft=3*core.fps;
  var Bearg = Class.create(Sprite, {
  initialize: function(x, y,bearno,team) {
-     Sprite.call(this, 32, 32);
+     Sprite.call(this, 50, 40);
      this.x = x;
      this.y = y;
      this.team=team;
-     this.image = core.assets['chara1.png'];
-     this.frame=10;
+     this.image = core.assets['kgen.png'];
+     this.frame=0;
      this.bearno=ba[bearno];
      core.rootScene.addChild(this);
      this.on('touchstart',function(){
@@ -81,15 +87,16 @@ var bearg5 =new Bearg(10,330,1,0);
    var Bearg2 = Class.create(Bearg,{
 initialize: function(x,y,bearno,team){
 Bearg.call(this,x,y,bearno,team); 			
-this.frame=10;
+this.frame=0;
 this.scaleX=-1;  
 }
 });
 
-    var bearg4 = new Bearg2(320,0,0,1);
-    var bearg5 = new Bearg2(320,64,0,1);
-    var bearg6 = new Bearg2(320,128,0,1);
-
+    var bearg21 = new Bearg2(570,130,0,1);
+    var bearg22 = new Bearg2(570,180,0,1);
+    var bearg23 = new Bearg2(570,230,0,1);
+    var bearg24 = new Bearg2(570,280,0,1);
+    var bearg25 = new Bearg2(570,330,0,1);
 
        var Bear = Class.create(Sprite, {
         initialize: function(x, y) {
@@ -129,6 +136,7 @@ this.scaleX=-1;
             if (this.within(Charas[1][i], 10)) {
              this.life -=Charas[1][i].power;
                   
+	     core.se.play();
                   this.label1.text=this.life+"<br>"+this.power;
              for(j in Charas[0]){
              if(Charas[0][j].life<=0){
@@ -217,7 +225,7 @@ this.frame=8;
      
     wall1 = new Sprite(32,320);
 		wall1.x=352;
-		wall1.backgroundColor="#00F";
+	//	wall1.backgroundColor="#00F";
     wall1.on('enterframe',function(){
 		for(i in Charas[0]){
  		if(wall1.intersect(Charas[0][i])){
@@ -231,7 +239,7 @@ this.frame=8;
 		core.rootScene.addChild(wall1);
 		wall2 = new Sprite(32,320);
 		wall2.x=0;
-		wall2.backgroundColor="#F00";
+	//	wall2.backgroundColor="#F00";
 		core.rootScene.addChild(wall2);
      
               
@@ -246,6 +254,20 @@ this.frame=8;
 		delete Charas[1][i];
 	//*	core.pushScene(core.makeScene());
 		}}});
+var Friendteam = new Sprite(140,50);
+ Friendteam.backgroundColor="#FF0";
+ Friendteam.x=10;
+ Friendteam.y=10;
+ Friendteam.image=core.assets['bearteam.jpg'];
+ core.rootScene.addChild(Friendteam);
+ var Enemyteam = new Sprite(140,50);
+ Enemyteam.backgroundColor="#FF0";
+ Enemyteam.x=490;
+ Enemyteam.y=10;
+ Enemyteam.image=core.assets['blik.jpg'];
+ core.rootScene.addChild(Enemyteam);
+core.rootScene.on('enterframe',function(){
+	core.bgm.play();});
     }
    core.debug(); 
   };
