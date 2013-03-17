@@ -232,9 +232,15 @@ this.frame=8;
 		core.rootScene.removeChild(Charas[0][i].label1);
 		Friendcount--;
 		score1++;
+		console.log(score1);
 		score1l.text=score1;
 		core.rootScene.removeChild(Charas[0][i]);
 		delete Charas[0][i];
+		if(score1<=5)var counter =new Flaglabel(90+score1*30,70);
+		else{var counter =new Flaglabel(90+(score1-5)*30,90);}
+		/*if(score1=10){score1=0;
+			var counter = null;
+		}*/
 		}}});
 		core.rootScene.addChild(wall1);
 		wall2 = new Sprite(32,320);
@@ -259,6 +265,17 @@ var Friendteam = new Sprite(140,50);
  Friendteam.x=10;
  Friendteam.y=10;
  Friendteam.image=core.assets['bearteam.jpg'];
+/* Friendteam.on('touchstart',function(){
+	 alert('touched');
+	 for(i in Charas[0]){
+		 core.rootScene.removeChild(Charas[0][i].label1);
+		 Friendcount=0;
+		 score1=0;
+		 score1.text=0;
+		 core.rootScene.removeChild(Charas[0][i]);
+		 delete Charas[0][i];}
+	 
+ });*/
  core.rootScene.addChild(Friendteam);
  var Enemyteam = new Sprite(140,50);
  Enemyteam.backgroundColor="#FF0";
@@ -268,6 +285,16 @@ var Friendteam = new Sprite(140,50);
  core.rootScene.addChild(Enemyteam);
 core.rootScene.on('enterframe',function(){
 	core.bgm.play();});
+
+var Flaglabel=Class.create(Sprite,{
+	initialize:function(x,y){
+	//	Sprite.call(this,20,20);
+		this.x=x;
+		this.y=y;
+		this.image=core.assets['flag.jpg'];
+		core.rootScene.addChild(this);
+	}
+});
     }
    core.debug(); 
   };
