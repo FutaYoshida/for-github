@@ -4,8 +4,10 @@
 window.onload = function(){
 	var core = new Core(640,480);
 core.preload('chara1.png');
-core.preload('layout.png');
+core.preload('layout.jpg');
 core.preload('skill1.png','skill2.png');
+core.preload('flag.jpg','round.jpg');
+core.preload('bearteam.jpg','blik.jpg')
 core.fps =15;
 var LIMIT_TIME = 60;
 	core.onload = function(){ 
@@ -13,7 +15,7 @@ var LIMIT_TIME = 60;
 		var Background=new Sprite(640,640);
 				Background.x  = 0;
 				Background.y  = 0;
-				Background.image = core.assets['layout.png'];
+				Background.image = core.assets['layout.jpg'];
 				core.rootScene.addChild(Background);
 		var friendSet=0;
 		//味方のセット数の管理
@@ -50,6 +52,9 @@ var LIMIT_TIME = 60;
 		var defaultframe=[0,1,0,2];
 		//味方の歩き
 		var enemydefaultframe=[5,6,5,7];
+		//敵の歩き
+		var spot =[130,220,310];
+		//敵出現位置固定
 var charaHp=[30,20,60,40,10,20];
 var charaAtk=[20,20,20,30,30,20];
 var charaDef=[10,20,20,30,30,20];
@@ -63,7 +68,7 @@ var charaRet=[10,15,15,20,15,10];
 				Sprite.call(this,a,b);
 				this.x     = x;
 				this.y     = y;
-			//	this.image = core.assets[photo];
+//				this.image = core.assets[photo];
 				this.backgroundColor=color;
 				core.rootScene.addChild(this);
 			 }
@@ -100,8 +105,8 @@ var charaRet=[10,15,15,20,15,10];
 				Sprite.call(this,30,30);
 				this.x = x;
 				this.y = y;
-				this.backgroundColor = "red";
-//				this.image=core.assets["chara1.png"];
+//				this.backgroundColor = "red";
+				this.image=core.assets["round.jpg"];
 				core.rootScene.addChild(this);
 			}
 		});
@@ -112,7 +117,7 @@ var charaRet=[10,15,15,20,15,10];
 				Sprite.call(this,20,20);
 				this.x = x;
 				this.y = y;
-				this.image=core.assets["chara1.png"];
+				this.image=core.assets["flag.jpg"];
 				core.rootScene.addChild(this);
 			}
 		});
@@ -120,7 +125,7 @@ var charaRet=[10,15,15,20,15,10];
 
 //試作クマ味方ー------------------------------------------------------
 
-			var Bear =Class.create(Sprite,{
+		var Bear =Class.create(Sprite,{
 			initialize:function(x,y,a,b,photo){
 				Sprite.call(this,a,b);
 				this.x     = x;
@@ -182,7 +187,6 @@ var charaRet=[10,15,15,20,15,10];
 						this.life -=enemyCharaBox[1][i].power;
 						for(j in friendCharaBox[0]){
 							if(friendCharaBox[0][j].life<=0){
-//delete機能しねえええええええええええええええええええええええええええええええ
 								core.rootScene.removeChild(friendCharaBox[0][j]);
 								friendCount--;
 								delete friendCharaBox[0][j]
@@ -217,6 +221,7 @@ var charaRet=[10,15,15,20,15,10];
 				this.power=10
 				this.sp   =-10
 				this.on("enterframe",function(){
+					//横移動の時
 					if(this.flag == 0){
 						this.sp =10;			//これがないとthis.yが-の時後ろに行ってしまう
 						this.x -=this.sp;
@@ -230,6 +235,7 @@ var charaRet=[10,15,15,20,15,10];
 							delete enemyCharaBox[0][enemyCharaNumber];
 						}
 					}
+					//縦移動の時
 					if(this.flag ==1){
 						this.y +=this.sp;
 						if(this.y<120){this.sp = 10}
@@ -319,7 +325,7 @@ var charaRet=[10,15,15,20,15,10];
 						console.log(friendCharaBox[this.team][i]);
 						break;
 					}}}}
-					if(this.team==1){  //チーム１＝敵
+/*					if(this.team==1){  //チーム１＝敵
 					if(enemyCount<10) {//テストのため１０
 					for(var i=0;i<=10;i++){
 					if(enemyCharaBox[this.team][i]==undefined){
@@ -328,10 +334,38 @@ var charaRet=[10,15,15,20,15,10];
 						enemyCount++;
 						break;
 					}}}}
-				});
+*/				});
 				core.rootScene.addChild(this);
 			 }
 		});
+		//ランダム生成用アイコン
+		var Chara_Icon2 =Class.create(Sprite,{
+	 		initialize:function(x,y,a,b,photo,team){
+		 		Sprite.call(this,a,b);
+		 		this.x     = x;
+		 		this.y     = y;
+				this.team  = team;
+		 		this.image = core.assets[photo];
+				this.backgroundColor="red";
+				this.on("enterframe",function(){
+					if(this.age%50==rand(50)){
+						if(this.team==1){
+        				if(enemyCount<1000) {
+        				for(var i=0;i<=1000;i++){
+      					if(enemyCharaBox[this.team][i]==undefined){
+							
+         					enemyNumber=i;
+         					enemyCharaBox[this.team][i]=new Enemy(this.x,spot[rand(2)],64,64,"chara1.png");
+          					enemyCount++;
+							console.log(enemyCount);
+							console.log(enemyCharaBox[this.team][i]);
+         					break;
+							
+        				}}}}
+					}
+				});
+			core.rootScene.addChild(this);
+			}});
 //ゲージ用クラス----------------------------------------------------
 		var friendGenerater=Class.create(Sprite,{
 			initialize: function(x,y,a,b){
@@ -413,7 +447,7 @@ var charaRet=[10,15,15,20,15,10];
 				alert("coco壱番屋!!!");
 			});
 
-		var icon_tame =new Icon(10,10,140,50,"chara1.png",0);
+		var icon_tame =new Icon(10,10,140,50,"bearteam.jpg",0);
 			icon_tame.on("touchstart",function(){
 				alert("ここはチームです。");
 			});
@@ -426,25 +460,25 @@ var charaRet=[10,15,15,20,15,10];
 		var friendgenerater = new friendGenerater(630,280,10,40);//(x,y,ｱｲｺﾝｻｲｽﾞx,ｱｲｺﾝｻｲｽﾞy,image)
 		var friendgenerater = new friendGenerater(630,330,10,40);//(x,y,ｱｲｺﾝｻｲｽﾞx,ｱｲｺﾝｻｲｽﾞy,image)
 		//アイコン精製---------------------------------------------------
-		var icon1 =new Chara_Icon(570,130,50,40,"chara1.png",1);//(x,y,ｱｲｺﾝｻｲｽﾞx,ｱｲｺﾝｻｲｽﾞy,image)
+		var icon1 =new Chara_Icon2(570,130,50,40,"chara1.png",1);//(x,y,ｱｲｺﾝｻｲｽﾞx,ｱｲｺﾝｻｲｽﾞy,image)
 				icon1.on("touchstart",function(){
 				var enemygenerater = new enemyGenerater(630,130,10,40);//ゲージ減る
 			//	var enemy = new Enemy(570,130,64,64,"chara1.png");//(x,y,ｱｲｺﾝｻｲｽﾞx,ｱｲｺﾝｻｲｽﾞy,image)
 
 				});
-		var icon2 =new Chara_Icon(570,180,50,40,"chara1.png",1);
+		var icon2 =new Chara_Icon2(570,180,50,40,"chara1.png",1);
 				icon2.on("touchstart",function(){
 					var enemygenerater = new enemyGenerater(630,180,10,40);
 				});
-		var icon3 =new Chara_Icon(570,230,50,40,"chara1.png",1);
+		var icon3 =new Chara_Icon2(570,230,50,40,"chara1.png",1);
 				icon3.on("touchstart",function(){
 					var enemygenerater = new enemyGenerater(630,230,10,40);
 				});
-		var icon4 =new Chara_Icon(570,280,50,40,"chara1.png",1);
+		var icon4 =new Chara_Icon2(570,280,50,40,"chara1.png",1);
 				icon4.on("touchstart",function(){
 					var enemygenerater = new enemyGenerater(630,280,10,40);
 				});
-		var icon5 =new Chara_Icon(570,330,50,40,"chara1.png",1);
+		var icon5 =new Chara_Icon2(570,330,50,40,"chara1.png",1);
 				icon5.on("touchstart",function(){
 					var enemygenerater = new enemyGenerater(630,330,10,40);
 				});
@@ -470,7 +504,7 @@ var charaRet=[10,15,15,20,15,10];
 				alert("1");
 			});
 
-		var icon_team =new Icon(490,10,140,50,"chara1.png");
+		var icon_team =new Icon(490,10,140,50,"blik.jpg");
 			icon_team.on("touchstart",function(){
 				alert("ここはチームです。");
 			});
@@ -487,3 +521,6 @@ var charaRet=[10,15,15,20,15,10];
 	};
 	core.debug();
 }
+	function rand(n) {
+	return Math.floor(Math.random() * (n+1));
+	}
