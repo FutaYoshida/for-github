@@ -2,16 +2,39 @@ enchant();
 window.onload= function(){
 var core = new Core(640,480);
  core.fps = 15;
+ core.preload('char.gif');
  core.onload=function(){
- var sample = new Sprite(32,32);
+ var sample = new Sprite(64,64);
  sample.backgroundColor="#ff0000";
  sample.a=-9;
  sample.b=-9;
+ sample.image=core.assets['char.gif'];
+ sample.frame=[0,0,1,1,0,0,2,2];
  sample.on('enterframe',function(){
   walk(this);
-  });
+ });
+sample.on('touchstart',function(){
+	statusDef(this,10,10);
+	this.scaleX*=-1;
+});
+sample.param=new Sprite(16,32);
+sample.param.backgroundColor="#00ff00";
+sample.param.x=sample.x+64;
+sample.param.on('enterframe',function(){
+	this.x=sample.x;
+	this.y=sample.y;});
+sample.param2=new Sprite(16,32);
+sample.param2.backgroundColor="#fff000";
+sample.param2.x=sample.x+64;
+sample.param2.on('enterframe',function(){
+	this.x=sample.x;
+	this.y=sample.y;
+if(this.height>=0)this.height-=1;
+});
 
  core.rootScene.addChild(sample);
+ core.rootScene.addChild(sample.param);
+ core.rootScene.addChild(sample.param2);
  };
  core.start();
 };
