@@ -17,9 +17,10 @@ var ar =[];
 sample.on('touchstart',function(){
 	statusDef(this,10,10);
 	this.scaleX*=-1;
-	Sample.collection.forEach(function(e){
+/*	Sample.collection.forEach(function(e){
 		core.rootScene.removeChild(e)});
-});
+});*/
+//現時点ではcollectionの挙動はわからなかった。
 var Sample = Class.create(Sprite,{
  initialize: function(x,y){
 	 Sprite.call(this,32,32);
