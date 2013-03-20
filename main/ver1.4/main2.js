@@ -6,9 +6,9 @@ window.onload = function() {
  core.preload('bearteam.jpg','blik.jpg','flag.jpg');
  core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3');
 
- core.se=Sound.load('crush_01.wav');
- core.bgm=Sound.load('tengoku_to_jigoku_full.mp3');
- core.bgm.volume=0.5;
+ //core.se=Sound.load('crush_01.wav');
+// var bgm=Sound.load('tengoku_to_jigoku_full.mp3');
+/* core.bgm.volume=0.5;*/
  core.fps = 15;
  /*core.makeScene =function(){
 	 var scene = new Scene();
@@ -118,7 +118,7 @@ if(this.team==1){
     var bearg24 = new Bearg2(570,280,0,1);
     var bearg25 = new Bearg2(570,330,0,1);
 
-       var Bear = Class.create(Sprite, {
+    var Bear = Class.create(Sprite, {
         initialize: function(x, y) {
          Sprite.call(this, 32, 32);
          this.x = x;
@@ -156,7 +156,7 @@ if(this.team==1){
             if (this.within(Charas[1][i], 10)) {
              this.life -=Charas[1][i].power;
                   
-	     core.se.play();
+	     core.assets['crush_01.wav'].clone().play();
                   this.label1.text=this.life+"<br>"+this.power;
              for(j in Charas[0]){
              if(Charas[0][j].life<=0){
@@ -256,8 +256,8 @@ this.frame=8;
 		score1l.text=score1;
 		core.rootScene.removeChild(Charas[0][i]);
 		delete Charas[0][i];
-		if(score1<=5)var counter =new Flaglabel(90+score1*30,70);
-		else{var counter =new Flaglabel(90+(score1-5)*30,90);}
+	/*	if(score1<=5)var counter =new Flaglabel(90+score1*30,70);
+		else{var counter =new Flaglabel(90+(score1-5)*30,90);}*/
 		/*if(score1=10){score1=0;
 			var counter = null;
 		}*/
@@ -296,16 +296,16 @@ var Friendteam = new Sprite(140,50);
 		 delete Charas[0][i];}
 	 
  });*/
- core.rootScene.addChild(Friendteam);
+/* core.rootScene.addChild(Friendteam);
  var Enemyteam = new Sprite(140,50);
  Enemyteam.backgroundColor="#FF0";
  Enemyteam.x=490;
  Enemyteam.y=10;
  Enemyteam.image=core.assets['blik.jpg'];
- core.rootScene.addChild(Enemyteam);
+ core.rootScene.addChild(Enemyteam);*/
 core.rootScene.on('enterframe',function(){
-	core.bgm.play();});
-
+	core.assets['tengoku_to_jigoku_full.mp3'].play();});
+/*
 var Flaglabel=Class.create(Sprite,{
 	initialize:function(x,y){
 	//	Sprite.call(this,20,20);
@@ -314,7 +314,7 @@ var Flaglabel=Class.create(Sprite,{
 		this.image=core.assets['flag.jpg'];
 		core.rootScene.addChild(this);
 	}
-});
+});*/
     }
    core.debug(); 
   };
