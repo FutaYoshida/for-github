@@ -4,6 +4,7 @@
 window.onload = function(){
 	var core = new Core(640,480);
 core.preload('chara1.png');
+core.preload('bear.gif','robo.gif')
 core.preload('layout.jpg');
 core.preload('skill1.png','skill2.png');
 core.preload('flag.jpg','round.jpg');
@@ -51,7 +52,7 @@ var LIMIT_TIME = 60;
 		//敵or味方判別
 		var defaultframe=[0,1,0,2];
 		//味方の歩き
-		var enemydefaultframe=[5,6,5,7];
+		var enemydefaultframe=[4,5,4,6];
 		//敵の歩き
 		var spot =[130,220,310];
 		//敵出現位置固定
@@ -274,7 +275,7 @@ var charaRet=[10,15,15,20,15,10];
 								enemyCount--;
 								delete enemyCharaBox[1][j]
 						}	}
-						this.frame =8;
+						this.frame =7;
 						this.tl.moveBy(100,0,5).then(function(){this.frame=enemydefaultframe});
 					}}
 				});
@@ -319,7 +320,7 @@ var charaRet=[10,15,15,20,15,10];
 					for(var i=0;i<10;i++){					//flagが空いてるのを探すためのfor
 					if(friendCharaBox[this.team][i]==undefined){		//iの値が何も入ってないとき真
 						friendCharaNumber=i;						
-						friendCharaBox[this.team][i]=new Bear(90,220,64,64,"chara1.png");//flagの空いてる場所にクマ召喚
+						friendCharaBox[this.team][i]=new Bear(90,220,64,64,"bear.gif");//flagの空いてる場所にクマ召喚
 						friendCount++;
 						console.log(friendCount);
 						console.log(friendCharaBox[this.team][i]);
@@ -355,7 +356,7 @@ var charaRet=[10,15,15,20,15,10];
       					if(enemyCharaBox[this.team][i]==undefined){
 							
          					enemyNumber=i;
-         					enemyCharaBox[this.team][i]=new Enemy(this.x,spot[rand(2)],64,64,"chara1.png");
+         					enemyCharaBox[this.team][i]=new Enemy(this.x,spot[rand(2)],64,64,"bear.gif");
           					enemyCount++;
 							console.log(enemyCount);
 							console.log(enemyCharaBox[this.team][i]);
