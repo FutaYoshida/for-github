@@ -8,7 +8,7 @@ core.preload('layout.jpg');
 core.preload('skill1.png','skill2.png');
 core.preload('flag.jpg','round.jpg');
 core.preload('bearteam.jpg','blik.jpg')
-core.fps =15;
+core.fps =5;
 var LIMIT_TIME = 60;
 	core.onload = function(){ 
 //とりあえずの背景
@@ -262,7 +262,7 @@ var charaRet=[10,15,15,20,15,10];
 						console.log(enemyScore);
 						core.rootScene.removeChild(enemyCharaBox[1][enemyCharaNumber]);
 						enemyCount--;
-						this.remove();
+						delete enemyCharaBox[1][enemyCharaNumber]
 					}
 					//敵衝突判定
 					for(i in friendCharaBox[0]){
@@ -350,8 +350,8 @@ var charaRet=[10,15,15,20,15,10];
 				this.on("enterframe",function(){
 					if(this.age%50==rand(50)){
 						if(this.team==1){
-        				if(enemyCount<1000) {
-        				for(var i=0;i<=1000;i++){
+        				if(enemyCount<5) {
+        				for(var i=0;i<=5;i++){
       					if(enemyCharaBox[this.team][i]==undefined){
 							
          					enemyNumber=i;
