@@ -4,11 +4,11 @@
 window.onload = function(){
 	var core = new Core(640,480);
 core.preload('chara1.png');
-core.preload('bear.gif','robo.gif')
+core.preload('bear.gif','robo.gif');
 core.preload('layout.jpg');
 core.preload('skill1.png','skill2.png');
 core.preload('flag.jpg','round.jpg');
-core.preload('bearteam.jpg','blik.jpg')
+core.preload('bearteam.jpg','blik.jpg');
 core.fps =5;
 var LIMIT_TIME = 60;
 	core.onload = function(){ 
@@ -77,11 +77,11 @@ var charaRet=[10,15,15,20,15,10];
 //壁クラス---------------------------------------------------------
 		var Wall = Class.create(Sprite,{
 			initialize:function(x,y){
-				Sprite.call(this,10,270)
+				Sprite.call(this,10,270);
 				this.x  = x;
 				this.y  = y;
 				this.backgroundColor = "2F8";
-				core.rootScene.addChild(this)
+				core.rootScene.addChild(this);
 			}
 		});
 		var enemywall= new Wall(560,120);
@@ -134,11 +134,11 @@ var charaRet=[10,15,15,20,15,10];
 				this.flag  = 0;//0で存在しない。１で準備、２で戦闘
 				this.frame =1;
 				this.image = core.assets[photo];
-				this.scaleX=1
+				this.scaleX=1;
 				//テスト用
-				this.life = 100
-				this.power=10
-				this.sp   =10
+				this.life = 100;
+				this.power=10;
+				this.sp   =10;
 				this.on("enterframe",function(){
 					if(this.flag == 0){
 						this.sp = 10;			//これがないとthis.yが-の時後ろに行ってしまう
@@ -190,7 +190,7 @@ var charaRet=[10,15,15,20,15,10];
 							if(friendCharaBox[0][j].life<=0){
 								core.rootScene.removeChild(friendCharaBox[0][j]);
 								friendCount--;
-								delete friendCharaBox[0][j]
+								delete friendCharaBox[0][j];
 						}	}
 					this.frame =3;
 					this.tl.moveBy(-100,0,5).then(function(){this.frame=defaultframe});
@@ -218,9 +218,9 @@ var charaRet=[10,15,15,20,15,10];
 				this.image = core.assets[photo];
 				this.scaleX=-1;
 				//テストステータス
-				this.life = 100
-				this.power=10
-				this.sp   =-10
+				this.life = 100;
+				this.power=10;
+				this.sp   =-10;
 				this.on("enterframe",function(){
 					//横移動の時
 					if(this.flag == 0){
@@ -231,9 +231,10 @@ var charaRet=[10,15,15,20,15,10];
 						}else if (this.y >=210 && this.y <=300 && this.x >= 90){this.y = 220;
 						}else if (this.y >=300 && this.y <=390 && this.x >= 90){this.y = 310;
 						}else{
-							core.rootScene.removeChild(enemyCharaBox[0][enemyCharaNumber]);
-							enemyCount--;
-							delete enemyCharaBox[0][enemyCharaNumber];
+//							core.rootScene.removeChild(enemyCharaBox[1][enemyCharaNumber]);
+//							enemyCount--;
+//							delete enemyCharaBox[1][enemyCharaNumber];
+console.log("a")
 						}
 					}
 					//縦移動の時
@@ -263,7 +264,7 @@ var charaRet=[10,15,15,20,15,10];
 						console.log(enemyScore);
 						core.rootScene.removeChild(enemyCharaBox[1][enemyCharaNumber]);
 						enemyCount--;
-						delete enemyCharaBox[1][enemyCharaNumber]
+						delete enemyCharaBox[1][enemyCharaNumber];
 					}
 					//敵衝突判定
 					for(i in friendCharaBox[0]){
@@ -273,7 +274,7 @@ var charaRet=[10,15,15,20,15,10];
 							if(enemyCharaBox[1][j].life<=0){
 								core.rootScene.removeChild(enemyCharaBox[1][j]);
 								enemyCount--;
-								delete enemyCharaBox[1][j]
+								delete enemyCharaBox[1][j];
 						}	}
 						this.frame =7;
 						this.tl.moveBy(100,0,5).then(function(){this.frame=enemydefaultframe});
@@ -301,7 +302,7 @@ var charaRet=[10,15,15,20,15,10];
 		 		this.image = core.assets[photo];
 				this.backgroundColor="red";
 				this.team = team;
-				core.rootScene.addChild(this)
+				core.rootScene.addChild(this);
 			}
 		});
 
@@ -356,7 +357,7 @@ var charaRet=[10,15,15,20,15,10];
       					if(enemyCharaBox[this.team][i]==undefined){
 							
          					enemyNumber=i;
-         					enemyCharaBox[this.team][i]=new Enemy(this.x,spot[rand(2)],64,64,"bear.gif");
+         					enemyCharaBox[this.team][i]=new Enemy(this.x-30,spot[rand(2)],64,64,"bear.gif");
           					enemyCount++;
 							console.log(enemyCount);
 							console.log(enemyCharaBox[this.team][i]);
@@ -393,9 +394,9 @@ var charaRet=[10,15,15,20,15,10];
 			}
 		});
 //コース
-		var coursu = new Coursu(90,120,470,90,"red")
-		var coursu = new Coursu(90,210,470,90,"yellow")
-		var coursu = new Coursu(90,300,470,90,"blue")
+		var coursu = new Coursu(90,120,470,90,"red");
+		var coursu = new Coursu(90,210,470,90,"yellow");
+		var coursu = new Coursu(90,300,470,90,"blue");
 //ゲージの土台--------------------------------------------------
 		//味方
 		var friendgenerater = new friendGenerater(70,130,10,40);//(x,y,ｱｲｺﾝｻｲｽﾞx,ｱｲｺﾝｻｲｽﾞy,image)
