@@ -53,6 +53,20 @@ var friendCharaNo=0;
 				this.gauge2.backgroundColor="#00F";
 				this.gauge2.on('enterframe',function(){
 					(this.height>0)?this.height-=1:this.height=40;});
+this.on('touchstart',function(){
+					   if(enemycount<5){
+						   for(var i=0; i<=5; i++){
+							   if(Charas[1][i]==undefined){
+								   EnemyCharaNo=i;
+								   Charas[1][i]=new EnemyChara(496,220);
+								   enemycount++;
+								   break;
+							   }
+						   }
+					   }
+				   });
+
+
 
 			}
 		});
@@ -66,11 +80,29 @@ var friendCharaNo=0;
 				CharaParam(this,0);
 				this.on('enterframe',function(){
 					Charamove(this,core);
+					Crush(this,Charas,0,1,core);
 				});
 				core.rootScene.addChild(this);
 			}
  
 		});
+		var EnemyChara =Class.create(Sprite,{
+			initialize:function(x,y){
+				CharaimgCreate(this,64,64,"char2.gif",core);
+				this.x=x;
+				this.y=y;
+				this.scaleX=1;
+				this.frame=[0,1,0,2];
+				CharaParam(this,6);
+				this.on('enterframe',function(){
+					Charamove(this,core);
+					Crush(this,Charas,1,0,core);
+				});
+				core.rootScene.addChild(this);
+			}
+
+		});
+
 
 		//一般イメージ用クラス（引数全部入り）
 		var Images= Class.create(Sprite,{
@@ -127,7 +159,7 @@ function CharaimgCreate(e,w,h,img,Corename){
 Sprite.call(e,w,h);
 e.image=Corename.assets[img];
 //Corename.rootScene.addChild(e);
-//バグ対策用に一時解除版
+//addChildを後回し（座標決定後）にすることで#1のバグを回避
 }
 function CharaParam(e,Charano){
  var Spd=[10,20,5,10,10,5,-10,-20,-5,-10,-10];
@@ -135,4 +167,12 @@ function CharaParam(e,Charano){
 }
 function Charamove(e,Corename){
 	e.x+=e.spd/Corename.fps;
+}
+function Crush(e,array,you,target,Corename){
+	for(var i in array[target]){
+		if(e.within(array[target][i],10)){
+			e.frame=3;
+			e.tl.moveBy(-10*e.spd,0,10).then(function(){e.frame=[0,1,0,2];});
+		}
+	}
 }
