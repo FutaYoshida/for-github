@@ -59,16 +59,17 @@ var friendCharaNo=0;
 		//登場キャラクラス
 		var FriendChara =Class.create(Sprite,{
 			initialize:function(x,y){
-				ClassimgCreate(this,64,64,"char.gif",core);
-				this.x=x;
-				this.y=y;
+				CharaimgCreate(this,64,64,"char.gif",core);
+			this.x=x;
+			this.y=y;
 				this.frame=[0,1,0,2];
 				CharaParam(this,0);
 				this.on('enterframe',function(){
 					Charamove(this,core);
 				});
+				core.rootScene.addChild(this);
 			}
-
+ 
 		});
 
 		//一般イメージ用クラス（引数全部入り）
@@ -122,7 +123,12 @@ function ClassimgCreate(e,w,h,img,Corename){
 	e.image=Corename.assets[img];
 	Corename.rootScene.addChild(e);
 }
-
+function CharaimgCreate(e,w,h,img,Corename){
+Sprite.call(e,w,h);
+e.image=Corename.assets[img];
+//Corename.rootScene.addChild(e);
+//バグ対策用に一時解除版
+}
 function CharaParam(e,Charano){
  var Spd=[10,20,5,10,10,5,-10,-20,-5,-10,-10];
  e.spd=Spd[Charano];
