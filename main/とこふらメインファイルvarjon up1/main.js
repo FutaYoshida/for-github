@@ -103,17 +103,18 @@ var hata    =[];
 			this.on("enterframe",function(){
 				this.frame=frienddefaultframe;
 				//壁に当たった時の処理
-				if(friendCharaBox[friendCharaNumber].within(enemygoal,10)){
-					core.rootScene.removeChild(friendCharaBox[friendCharaNumber]);
-					friendCount--;
-					delete friendCharaBox[friendCharaNumber];			
+//				if(friendCharaBox[friendCharaNumber].within(enemygoal,10)){
+				if(this.within(enemygoal,10)){
+//					for(this in enemygoal){
+					dead();
+//					}
 						friendScore++;
 					for(var i=0;i<=10;i++){
 						if(hata[i] == undefined){
 							if(friendScore <= 5){		
 								 hata[i]= new Images(120+(30*i),70,20,20,"flag.jpg");break;
 							}else if(friendScore<10){ 	
-								 hata[i] =new Images(120+(30*(i-5)),90,20,20,"flag.jpg");break;
+									 hata[i] =new Images(120+(30*(i-5)),90,20,20,"flag.jpg");break;
 							}else{   hata[i] =new Images(240,90,20,20,"flag.jpg");
 									var round = new Images(20,70,30,30,"round.jpg");break;
 						}	}
@@ -195,7 +196,7 @@ function ButtonCreate(e,team){
 			if(friendCharaBox[i]==undefined){
 			friendCount++;
 			friendCharaNumber=i
-			friendCharaBox[friendCharaNumber]= new friendChara(90,220,"bear.gif");
+			friendCharaBox[i]= new friendChara(90,220,"bear.gif");
 			break;					
 		}}}}
 		if(team== 1){					//チーム判定
@@ -208,6 +209,31 @@ function ButtonCreate(e,team){
 		}}}}
 		this.gauge2.on("enterframe",function(){ (this.height>0)?this.height-=1:this.height=40;});
 	});
+}
+
+//消えるときの動作
+
+function dead(){
+	if(friendCharabox[0]){
+		core.rootScene.removeChild(friendCharaBox[0]);
+		friendCharaCount--;
+		delete friendCharaBox[0];}
+	if(friendCharabox[1]){
+		core.rootScene.removeChild(friendCharaBox[1]);
+		Count--;
+		delete friendCharaBox[1];}
+	if(box[2]){
+		core.rootScene.removeChild(friendCharaBox[2]);
+		Count--;
+		delete friendCharaBox[2];}
+	if(box[3]){
+		core.rootScene.removeChild(friendCharaBox[3]);
+		Count--;
+		delete friendCharaBox[3];}
+	if(box[4]){
+		core.rootScene.removeChild(friendCharaBox[4]);
+		Count--;
+		delete friendCharaBox[4];}
 }
 //-------------------------------------------------------------------------------------------------
 	}
