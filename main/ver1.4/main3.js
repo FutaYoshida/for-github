@@ -81,8 +81,9 @@ pose.addChild(windowscene);
 					(this.height>0)?this.height-=1:this.toggle=true;}
 					else{this.height=0;}
 				}	);
-				this.on('touchstart',function(){
-					if(this.gauge2.toggle){
+				this.on('enterframe',function(){
+					if(this.gauge2.toggle&&this.age%(100-rand(30))==0){
+						console.log("go");
 						this.gauge2.toggle=false;
 						this.gauge2.height=40;
 						for(var i=0; i<=5; i++){
@@ -107,10 +108,11 @@ pose.addChild(windowscene);
 			this.x=x;
 			this.y=y;
 			this.toggle=0;
+			this.backgroundColor="#ff0000";
 				this.frame=[0,1,0,2];
 				CharaParam(this,0);
 				this.on('enterframe',function(){
-					this.y={0:220,2:310}[this.toggle];
+				//	this.y={0:220,2:310}[this.toggle];
 				//	if(this.toggle==1){this.tl.moveBy(130,130,15)};
 					Charamove(this,core);
 					Crush(this,Charas,0,1,core,friendcount);
@@ -125,10 +127,21 @@ for(j in Charas[0]){
 			}
 		
 				});
-				this.on('touchstart',function(){
-				//	this.toggle={0:1,1:2,2:0}[this.toggle];
+			/*	this.on('touchstart',function(){
 				//	console.log(this.toggle);
-					});
+		                this.backgroundColor="#ff0000";
+			//	this.tl.moveBy(10,10,3);
+			vmove(this,this.toggle);
+
+					this.toggle={0:1,1:2,2:3,3:0}[this.toggle];
+					});*/
+				this.on('touchmove',function(e){
+					this.y=e.y-this.height/2;
+				});
+				this.on('touchend',function(e){
+if(e.y<220){this.y=130;}else if(e.y<310){this.y=220;}
+else{this.y=310;}
+				});
 				core.rootScene.addChild(this);
 			}
  
@@ -193,7 +206,6 @@ for(j in Charas[1]){
 		*/
 			core.pushScene(core.makescene());
 		});
-
 		var enemyteam = new Images(490,10,140,50,"blik.jpg");
 		var enemygoal = new Images(80,120,10,270,"");
 		var friendgoal = new Images(560,120,10,270,"");
@@ -361,3 +373,5 @@ function remove(e,Corename){
 }
 function rand(n){
 	return Math.floor(Math.random()*(n+1));}
+function vmove(e,a){
+	e.tl.moveBy(0,{0:90,1:-90,2:-90,3:90}[a],10);}
