@@ -9,7 +9,7 @@ core.preload('layout.jpg');
 core.preload('skill1.png','skill2.png');
 core.preload('flag.jpg','round.jpg');
 core.preload('bearteam.jpg','blik.jpg');
-core.preload('kgen.png');
+core.preload('waiticon.gif');
 
 core.fps =5;
 var LIMIT_TIME = 60;
@@ -30,6 +30,7 @@ core.onload = function(){
 //charaDef		//キャラクターのパラメータ[通常、軽量、重量、高コスト、攻撃、特攻];
 //charaSpd		//キャラクターのパラメータ[通常、軽量、重量、高コスト、攻撃、特攻];
 //charaRet		//キャラクターのパラメータ[通常、軽量、重量、高コスト、攻撃、特攻];
+//type          //キャラのタイプを格納する
 //～敵限定～
 //spot			ランダム精製時の1､2､3レーン固定
 //--------------------------------------------------------------------------
@@ -57,14 +58,17 @@ var charaAtk=[20,20,20,30,30,20];
 var charaDef=[10,20,20,30,30,20];
 var charaSpd=[10,20,5,10,10,5];
 var charaRet=[10,15,15,20,15,10];
+var type    =[];
 //キャラクターのパラメータ[通常、軽量、重量、高コスト、攻撃、特攻];
 	//キャラ生成ボタン--------------------------------------------------------
 	//味方
 	var friendCharaButton = Class.create(Sprite,{
-		initialize:function(x,y){
-			ClassimgCreate(this,50,40,"kgen.png",core);
+		initialize:function(x,y,type){
+			ClassimgCreate(this,50,40,"waiticon.gif",core);
 			this.x=x;
 			this.y=y;
+			this.frame=0;
+			this.type = type;
 			this.gauge = new Images(x+60,y,10,40,"",core);
 			 this.gauge.backgroundColor="#f00";
 			this.gauge2 = new Images(x+60,y,10,40,"",core);
@@ -74,9 +78,10 @@ var charaRet=[10,15,15,20,15,10];
 					for(var i=0;i< 5;i++){
 					if(friendCharaBox[i]==undefined){
 					friendCount++;
-					friendCharaBox[i]= new friendChara(90,220,"bear.gif");
-					break;	
+					friendCharaBox[i]= new friendChara(90,220,"bear.gif",type);
+					break;					
 					}}}
+					console.log(friendCharaBox[i]);
 					this.gauge2.on("enterframe",function(){ 
 			 			(this.height>0)?this.height-=1:this.height=40;
 				});	});
@@ -84,9 +89,10 @@ var charaRet=[10,15,15,20,15,10];
 	//敵
 	var enemyCharaButton = Class.create(Sprite,{
 		initialize:function(x,y){
-			ClassimgCreate(this,50,40,"kgen.png",core);
+			ClassimgCreate(this,50,40,"waiticon.gif",core);
 			this.x=x;
 			this.y=y;
+			this.frame=1;
 			this.gauge = new Images(x+60,y,10,40,"",core);
 			 this.gauge.backgroundColor="#f00";
 			this.gauge2 = new Images(x+60,y,10,40,"",core);
@@ -100,20 +106,35 @@ var charaRet=[10,15,15,20,15,10];
 	//キャラクター------------------------------------------------------
 	//味方
 	var friendChara = Class.create(Sprite,{
-		initialize:function(x,y,img){
+		initialize:function(x,y,img,type){
 			CharaimgCreate(this,x,y,64,64,img,core);
+			Charastatus(type);
+			this.Hp =charaHp;
+			this.Atk=charaAtk;
+			this.Def=charaDef;
+			this.Spd=charaSpd;
+			this.Ret=charaRet;
+			console.log (this.Hp)
 			this.flag  = 0;
 			this.frame = 0;
 			this.sclaeX= 1;
-			//この辺にHPなど書く予定
 			this.on("enterframe",function(){
+			if(this.flag == 0);
+			this.frame=frienddefaultframe;
 			this.x +=10;	
 			});
 		}});
 
 
+//キャラのステータス
+function Charastatus(type){
+charaHp=[type];
+charaAtk=[type];
+charaDef=[type];
+charaSpd=[type];
+charaRet=[type];
 
-
+}
 
 
 
@@ -152,8 +173,11 @@ var charaRet=[10,15,15,20,15,10];
 		var ecb = [];
 		//forを利用してキャラボタンの出力
 		for(var i=0; i<5; i++){
-			fcb[i]= new friendCharaButton (10,130+(50*i));
-			ecb[i]= new enemyCharaButton (570,130+(50*i));
+			type=i
+			fcb[i]= new friendCharaButton (10,130+(50*i),type);
+			ecb[i]= new enemyCharaButton (570,130+(50*i),type);
+		console.log(type);
+
 		}
 
 	}
