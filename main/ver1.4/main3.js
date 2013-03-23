@@ -3,16 +3,29 @@ window.onload= function(){
 	var core = new Core(640,480);
 	core.fps=10;
 	core.preload('char.gif','char2.gif','kgen.png');
-	core.preload('layout.jpg','bearteam.jpg','blik.jpg','flag.jpg');
+	core.preload('layout.jpg','bearteam.jpg','blik.jpg','flag.jpg','round.jpg');
 
-	core.onload=function(){	
+	core.onload=function(){
+		core.makescene=function(){
+	var pose=new Scene();
+var windowscene=new Sprite(320,240);
+windowscene.backgroundColor="#eeeeee";
+windowscene.x=160;
+windowscene.y=120;
+windowscene.on('touchstart',function(){
+	core.popScene();}
+	);
+pose.addChild(windowscene);
+	return pose;
+}	
 	var friendcount=0;
 	var enemycount=0;
 	var friendset=0;
 	var enemyset=0;
+        var friendround=0;
+	var enemyround=0;
 	var Charas=[[],[]]
-		var flag=[[],[]]
-var friendCharaNo=0;
+        var friendCharaNo=0;
 	var EnemyCharaNo=0;
 		//生成キャラクラス
 		var FriGen= Class.create(Sprite,{
@@ -20,27 +33,36 @@ var friendCharaNo=0;
 				ClassimgCreate(this,50,40,"kgen.png",core);
 				this.x=x;
 				this.y=y;
+				this.toggle=true;
 				//出撃ゲージ
 				this.gauge=new Images(x+60,y,10,40,"",core);
 				this.gauge.backgroundColor="#f00";	
 				this.gauge2=new Images(x+60,y,10,40,"",core);
 				this.gauge2.backgroundColor="#00F";
+				this.gauge2.toggle=true;
 				this.gauge2.on('enterframe',function(){
-					(this.height>0)?this.height-=1:this.height=40;});
+					if(!this.toggle){
+					(this.height>0)?this.height-=1:this.toggle=true;}
+					else{this.height=0;}
+				});
 			
-				   this.on('touchstart',function(){
-					   if(friendcount<5){
-						   for(var i=0; i<=5; i++){
-							   if(Charas[0][i]==undefined){
-								   friendCharaNo=i;
-								   Charas[0][i]=new FriendChara(90,220);
-								   friendcount++;
-								 //  console.log(friendcount);
-								   break;
-							   }
-						   }
-					   }
-				   });
+				this.on('touchstart',function(){
+					console.log(this.gauge2.toggle);
+					if(this.gauge2.toggle){this.gauge2.toggle=false;
+						this.gauge2.height=40;
+						if(friendcount<5){
+							for(var i=0; i<=5; i++){
+								if(Charas[0][i]==undefined){
+									friendCharaNo=i;
+									Charas[0][i]=new FriendChara(90,220);
+									friendcount++;
+									//  console.log(friendcount);
+									break;
+								}
+							}
+						}
+					}
+				});
 			}
 		});
 		var EneGen= Class.create(Sprite,{
@@ -53,20 +75,26 @@ var friendCharaNo=0;
 				this.gauge.backgroundColor="#f00";	
 				this.gauge2=new Images(x+60,y,10,40,"",core);
 				this.gauge2.backgroundColor="#00F";
+				this.gauge2.toggle=true;
 				this.gauge2.on('enterframe',function(){
-					(this.height>0)?this.height-=1:this.height=40;});
-this.on('touchstart',function(){
-					   if(enemycount<5){
-						   for(var i=0; i<=5; i++){
-							   if(Charas[1][i]==undefined){
-								   EnemyCharaNo=i;
-								   Charas[1][i]=new EnemyChara(496,220);
-								   enemycount++;
-								   break;
-							   }
-						   }
-					   }
-				   });
+					if(!this.toggle){
+					(this.height>0)?this.height-=1:this.toggle=true;}
+					else{this.height=0;}
+				}	);
+				this.on('touchstart',function(){
+					if(this.gauge2.toggle){
+						this.gauge2.toggle=false;
+						this.gauge2.height=40;
+						for(var i=0; i<=5; i++){
+								if(Charas[1][i]==undefined){
+									EnemyCharaNo=i;
+									Charas[1][i]=new EnemyChara(496,220);
+									enemycount++;
+									break;
+								}
+							}
+					}
+				});
 
 
 
@@ -78,11 +106,15 @@ this.on('touchstart',function(){
 				CharaimgCreate(this,64,64,"char.gif",core);
 			this.x=x;
 			this.y=y;
+			this.toggle=0;
 				this.frame=[0,1,0,2];
 				CharaParam(this,0);
 				this.on('enterframe',function(){
+					this.y={0:220,2:310}[this.toggle];
+				//	if(this.toggle==1){this.tl.moveBy(130,130,15)};
 					Charamove(this,core);
 					Crush(this,Charas,0,1,core,friendcount);
+					console.log(this.y+""+this.x);
 for(j in Charas[0]){
 				if(Charas[0][j].hp<=0){
 					friendcount--;
@@ -93,6 +125,10 @@ for(j in Charas[0]){
 			}
 		
 				});
+				this.on('touchstart',function(){
+				//	this.toggle={0:1,1:2,2:0}[this.toggle];
+				//	console.log(this.toggle);
+					});
 				core.rootScene.addChild(this);
 			}
  
@@ -102,11 +138,14 @@ for(j in Charas[0]){
 				CharaimgCreate(this,64,64,"char2.gif",core);
 				this.x=x;
 				this.y=y;
+				this.toggle=0;
 				this.scaleX=1;
 				this.frame=[0,1,0,2];
 				CharaParam(this,6);
 				this.on('enterframe',function(){
+//if(this.age%rand(20)==0&&this.age%10==0&&this.age>=30){this.toggle={0:1,1:2,2:3}[this.toggle];}
 					Charamove(this,core);
+				//	console.log("hit");
 					Crush(this,Charas,1,0,core,enemycount);
 for(j in Charas[1]){
 				if(Charas[1][j].hp<=0){
@@ -135,8 +174,8 @@ for(j in Charas[1]){
 		var bg = new Images(0,0,640,480,"layout.jpg");	
 		var friendteam = new Images(10,10,140,50,"bearteam.jpg");
 		friendteam.on('touchstart',function(){
-			//全リセット処理
-			for(var i in Charas[0]){
+			//全リセット処理テスト
+		/*	for(var i in Charas[0]){
 				core.rootScene.removeChild(Charas[0][i]);
 				delete Charas[0][i];}
 			for(var i in Charas[1]){
@@ -151,7 +190,8 @@ for(j in Charas[1]){
 			friendcount=0;
 			enemyset=0;
 			friendset=0;
-		
+		*/
+			core.pushScene(core.makescene());
 		});
 
 		var enemyteam = new Images(490,10,140,50,"blik.jpg");
@@ -159,6 +199,8 @@ for(j in Charas[1]){
 		var friendgoal = new Images(560,120,10,270,"");
 		var friendflag = [];
 		var enemyflag =[];
+		var friendstar=[];
+		var enemystar=[];
 				for(var i=0;i<enemyset;i++){
 			if(i<5){
 			  enemyflag[i]=new Images(380+(i*30),70,20,20,"flag.jpg");}
@@ -189,22 +231,26 @@ for(j in Charas[1]){
 					delete friendflag[j];
 					console.log(j);
 				}
-	for(var i in Charas[0]){
-				core.rootScene.removeChild(Charas[0][i]);
-				delete Charas[0][i];}
-			for(var i in Charas[1]){
-				core.rootScene.removeChild(Charas[1][i]);
-				delete Charas[1][i];}
-			for(var i in friendflag){
-				remove(friendflag[i],core);
-			}
-			for(var i in enemyflag){
-				remove(enemyflag[i],core);}
-				enemycount=0;
-			friendcount=0;
-			enemyset=0;
-			friendset=0;
+				for(var i in Charas[0]){
+					core.rootScene.removeChild(Charas[0][i]);
+					delete Charas[0][i];}
+				for(var i in Charas[1]){
+					core.rootScene.removeChild(Charas[1][i]);
+					delete Charas[1][i];}
+				for(var i in friendflag){
+					remove(friendflag[i],core);
 				}
+				for(var i in enemyflag){
+					remove(enemyflag[i],core);}
+				enemycount=0;
+				friendcount=0;
+				enemyset=0;
+				friendset=0;
+friendstar[friendround]=new Images(20+(40*friendround),70,30,30,"round.jpg",core);
+				friendround++;
+				if(friendround==2){alert('you win!');core.end();}
+
+			}
 		});
 		enemygoal.on('enterframe',function(){
 			for(var i in Charas[1]){
@@ -226,11 +272,30 @@ for(j in Charas[1]){
 					delete enemyflag[j];
 					console.log(j);
 				}
-					enemyset=0; 
+	for(var i in Charas[0]){
+					core.rootScene.removeChild(Charas[0][i]);
+					delete Charas[0][i];}
+				for(var i in Charas[1]){
+					core.rootScene.removeChild(Charas[1][i]);
+					delete Charas[1][i];}
+				for(var i in friendflag){
+					remove(friendflag[i],core);
+				}
+				for(var i in enemyflag){
+					remove(enemyflag[i],core);}
+				enemycount=0;
+				friendcount=0;
+				enemyset=0;
+				friendset=0;
+
+enemystar[enemyround]=new Images(+(40*enemyround),70,30,30,"round.jpg",core);
+enemyround++;
+if(enemyround==2){alert('you lose..');core.end();}
 			}
+			
 		});
 
-		
+	//	var round = new Images(590,70,30,30,"round.jpg",core);
 
 
 		//キャラクタ生成クラスは一番上の層に
@@ -273,6 +338,7 @@ function Charamove(e,Corename){
 function Crush(e,array,you,target,Corename,countname){
 	for(var i in array[target]){
 		if(e.within(array[target][i],10)){
+			console.log(array[target][i]);
 			e.hp-=array[target][i].atk-(e.def);
 			/*for(j in array[you]){
 				if(array[you][j].hp<=0){
@@ -293,3 +359,5 @@ function remove(e,Corename){
 	Corename.rootScene.removeChild(e);
 	delete e;
 }
+function rand(n){
+	return Math.floor(Math.random()*(n+1));}
