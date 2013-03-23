@@ -61,17 +61,28 @@ var type    =0;
 	//キャラ生成ボタン--------------------------------------------------------
 	//味方
 	var friendCharaButton = Class.create(Sprite,{
-		initialize:function(x,y){
+		initialize:function(x,y,type){
 			ClassimgCreate(this,50,40,"waiticon.gif",core);
 			this.x=x;
 			this.y=y;
+			this.frame=0;
 			this.type = type;
 			this.gauge = new Images(x+60,y,10,40,"",core);
+			 this.gauge.backgroundColor="#f00";
 			this.gauge2 = new Images(x+60,y,10,40,"",core);
-
-			ButtonCreate(this,0);
-
-
+			 this.gauge2.backgroundColor="#00F";
+			 	this.on("touchstart",function(){		//ﾀｯﾁでキャラ生成&ゲージ動作
+					if(friendCount < 5){				
+					for(var i=0;i< 5;i++){
+					if(friendCharaBox[i]==undefined){
+					friendCount++;
+					friendCharaBox[i]= new friendChara(90,220,"bear.gif",type);
+					break;					
+					}}}
+					console.log(friendCharaBox[i]);
+					this.gauge2.on("enterframe",function(){ 
+			 			(this.height>0)?this.height-=1:this.height=40;
+				});	});
 	}	});
 	//敵
 	var enemyCharaButton = Class.create(Sprite,{
@@ -81,42 +92,48 @@ var type    =0;
 			this.y=y;
 			this.frame=1;
 			this.gauge = new Images(x+60,y,10,40,"",core);
+			 this.gauge.backgroundColor="#f00";
 			this.gauge2 = new Images(x+60,y,10,40,"",core);
-			ButtonCreate(this,1);
+			 this.gauge2.backgroundColor="#00F";
+			 	this.on("touchstart",function(){
+					//キャラクター精製
+					this.gauge2.on("enterframe",function(){ 
+			 			(this.height>0)?this.height-=1:this.height=40;
+			});});
 	}	});
 	//キャラクター------------------------------------------------------
 	//味方
 	var friendChara = Class.create(Sprite,{
-		initialize:function(x,y,img){
-			CharaimgCreate(this,x,y,64,64,img,core,0);
-			this.Hp =100;
-			this.Atk=10;
-			this.Def=10;
-			this.Spd=10;
-			this.Ret=10;
+		initialize:function(x,y,img,type){
+			CharaimgCreate(this,x,y,64,64,img,core);
+			Charastatus(type);
+			this.Hp =charaHp[type];
+			this.Atk=charaAtk[type];
+			this.Def=charaDef;
+			this.Spd=charaSpd;
+			this.Ret=charaRet;
+			console.log (this.Hp)
 			this.flag  = 0;
 			this.frame = 0;
 			this.sclaeX= 1;
 			this.on("enterframe",function(){
-				this.frame=frienddefaultframe;
-				//flag==0ならばx移動　１ならばy移動
-	});	}});
-	//敵
-	var enemyChara = Class.create(Sprite,{
-		initialize:function(x,y,img){
-			CharaimgCreate(this,x,y,64,64,img,core,1);
-			this.Hp =100;
-			this.Atk=10;
-			this.Def=10;
-			this.Spd=-10;
-			this.Ret=10;
-			this.flag  = 0;
-			this.frame = 0;
-			this.sclaeX= 1;
-			this.on("enterframe",function(){
-				this.frame=enemydefaultframe;
+			if(this.flag == 0);
+			this.frame=frienddefaultframe;
+			this.x +=this.Spd;	
+			});
+		}});
 
-	});	}});
+
+//キャラのステータス
+	function Charastatus(type){
+	charaHp =[type];
+	charaAtk=[type];
+	charaDef=[type];
+	charaSpd=[type];
+	charaRet=[type];
+	console.log(type)
+}
+
 
 
 
@@ -154,41 +171,13 @@ var type    =0;
 		var ecb = [];
 		//forを利用してキャラボタンの出力
 		for(var i=0; i<5; i++){
-			fcb[i]= new friendCharaButton (10,130+(50*i));
-			ecb[i]= new enemyCharaButton (570,130+(50*i));
+			type=i
+			fcb[i]= new friendCharaButton (10,130+(50*i),type);
+			ecb[i]= new enemyCharaButton (570,130+(50*i),type);
+		console.log(type);
+
 		}
 
-//ボタンでくま作成。(this,チーム０=味方１=敵)
-//機能リスト----------------------------------------------------------------------------------------
-//キャラタッチでのキャラ精製及び、ゲージ動作開始
-//フレーム管理(画像関係)
-//ゲージ動作
-//--------------------------------------------------------------------------------------------------
-function ButtonCreate(e,team){
-	e.frame = team
-	e.gauge.backgroundColor="#f00";
-	e.gauge2.backgroundColor="#00F";
-	e.on("touchstart",function(){		//ﾀｯﾁでキャラ生成&ゲージ動作
-		if(team== 0){					//チーム判定
-			if(friendCount < 5){				
-			for(var i=0;i< 5;i++){
-			if(friendCharaBox[i]==undefined){
-			friendCount++;
-			friendCharaBox[i]= new friendChara(90,220,"bear.gif");
-			break;					
-		}}}}
-		if(team== 1){					//チーム判定
-			if(enemyCount < 5){				
-			for(var i=0;i< 5;i++){
-			if(enemyCharaBox[i]==undefined){
-			enemyCount++;
-			enemyCharaBox[i]= new enemyChara(496,220,"robo.gif");
-			break;					
-		}}}}
-		this.gauge2.on("enterframe",function(){ (this.height>0)?this.height-=1:this.height=40;});
-	});
-}
-//-------------------------------------------------------------------------------------------------
 	}
 	core.debug();
 }
@@ -199,42 +188,14 @@ function ClassimgCreate(e,w,h,img,Corename){
 	Corename.rootScene.addChild(e);
 }
 
-//キャラクター用クラス(this,x座標,y座標,幅,高さ,画像ファイル名,core,味方or敵）
-//機能リスト--------------------------------------------------------------------------
-//移動フラグの管理
-//移動変更時のスナップ、及びエリア指定
-//衝突判定(予定)
-//スコア判定(予定）
-//
-//-------------------------------------------------------------------------------------
-function CharaimgCreate(e,x,y,w,h,img,Corename,team){
+function CharaimgCreate(e,x,y,w,h,img,Corename){
 	Sprite.call(e,w,h);
 	e.x=x;
 	e.y=y;
 	e.image=Corename.assets[img];
-	e.on("touchstart",function(a){
-	//x,y移動のフラグ管理
-		if(e.flag==0){e.flag=1;}
-			else{e.flag=0;}
-	});
-	e.on("enterframe",function(){
-		if(this.flag == 0){				//flag==0ならばx移動　１ならばy移動
-		if(team == 0)this.Spd =10;		//これがなければyが‐移動している時、x座標移動すると後ろに行く
-		if(team == 1)this.Spd =-10;
-		this.x   +=this.Spd;
-		if(this.y >=120 && this.y <=210 && this.x >= 90){this.y = 130;}
-		if (this.y >=210 && this.y <=300 && this.x >= 90){this.y = 220;}
-		if (this.y >=300 && this.y <=390 && this.x >= 90){this.y = 310;}
-	}
-		if(this.flag == 1){
-			this.y +=this.Spd;
-			if(this.y<120){this.Spd = 10}
-			if(this.y>326){this.Spd*=-1}
-	}
-	});
 	Corename.rootScene.addChild(e);
 }
-//乱数設定用関数
+
 	function rand(n) {
 	return Math.floor(Math.random() * (n+1));
 	}
