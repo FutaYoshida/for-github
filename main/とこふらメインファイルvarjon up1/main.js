@@ -32,6 +32,7 @@ core.onload = function(){
 //type          //キャラのタイプを格納する
 //～敵限定～
 //spot			ランダム精製時の1､2､3レーン固定
+//flag          ｷｬﾗの移動管理、０＝ｘ移動　１＝ｙ移動
 //--------------------------------------------------------------------------
 //味方
 var friendScore			=0; 
@@ -57,6 +58,8 @@ var charaDef=[10,20,20,30,30,20];
 var charaSpd=[10,20,5,10,10,5];
 var charaRet=[10,15,15,20,15,10];
 var type    =0;
+var flag    =0;
+var hata    =[];
 //キャラクターのパラメータ[通常、軽量、重量、高コスト、攻撃、特攻];
 	//キャラ生成ボタン--------------------------------------------------------
 	//味方
@@ -99,8 +102,26 @@ var type    =0;
 			this.sclaeX= 1;
 			this.on("enterframe",function(){
 				this.frame=frienddefaultframe;
-				//flag==0ならばx移動　１ならばy移動
-	});	}});
+				//壁に当たった時の処理
+				if(friendCharaBox[friendCharaNumber].within(enemygoal,10)){
+					core.rootScene.removeChild(friendCharaBox[friendCharaNumber]);
+					friendCount--;
+					delete friendCharaBox[friendCharaNumber];			
+						friendScore++;
+					for(var i=0;i<=10;i++){
+						if(hata[i] == undefined){
+							if(friendScore <= 5){		
+								 hata[i]= new Images(120+(30*i),70,20,20,"flag.jpg");break;
+							}else if(friendScore<10){ 	
+								 hata[i] =new Images(120+(30*(i-5)),90,20,20,"flag.jpg");break;
+							}else{   hata[i] =new Images(240,90,20,20,"flag.jpg");
+									var round = new Images(20,70,30,30,"round.jpg");break;
+						}	}
+				}	}
+				
+				console.log(friendScore)
+						
+	});	}	});
 	//敵
 	var enemyChara = Class.create(Sprite,{
 		initialize:function(x,y,img){
@@ -128,7 +149,6 @@ var type    =0;
 				this.y=y;
 		} });
 		
-
 
 
 
@@ -174,7 +194,8 @@ function ButtonCreate(e,team){
 			for(var i=0;i< 5;i++){
 			if(friendCharaBox[i]==undefined){
 			friendCount++;
-			friendCharaBox[i]= new friendChara(90,220,"bear.gif");
+			friendCharaNumber=i
+			friendCharaBox[friendCharaNumber]= new friendChara(90,220,"bear.gif");
 			break;					
 		}}}}
 		if(team== 1){					//チーム判定
