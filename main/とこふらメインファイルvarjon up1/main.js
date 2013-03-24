@@ -102,23 +102,7 @@ var hata    =[];
 			this.sclaeX= 1;
 			this.on("enterframe",function(){
 				this.frame=frienddefaultframe;
-				//壁に当たった時の処理
-//				if(friendCharaBox[friendCharaNumber].within(enemygoal,10)){
-				if(this.within(enemygoal,10)){
-//					for(this in enemygoal){
-					dead();
-//					}
-						friendScore++;
-					for(var i=0;i<=10;i++){
-						if(hata[i] == undefined){
-							if(friendScore <= 5){		
-								 hata[i]= new Images(120+(30*i),70,20,20,"flag.jpg");break;
-							}else if(friendScore<10){ 	
-									 hata[i] =new Images(120+(30*(i-5)),90,20,20,"flag.jpg");break;
-							}else{   hata[i] =new Images(240,90,20,20,"flag.jpg");
-									var round = new Images(20,70,30,30,"round.jpg");break;
-						}	}
-				}	}
+
 				
 				console.log(friendScore)
 						
@@ -168,6 +152,20 @@ var hata    =[];
 		//仮の色付け
 		friendgoal.backgroundColor="ee00ee";
 		enemygoal.backgroundColor ="ee00ee";
+		//壁に当たった時の処理
+//		if(friendCharaBox[friendCharaNumber].within(enemygoal,10)){
+		friend
+		if(this.within(enemygoal,10)){
+			friendScore++;
+			for(var i=0;i<=10;i++){
+				if(hata[i] == undefined){
+					if(friendScore <= 5){		
+						 hata[i]= new Images(120+(30*i),70,20,20,"flag.jpg");break;
+					}else if(friendScore<10){ 	
+					 hata[i] =new Images(120+(30*(i-5)),90,20,20,"flag.jpg");break;
+					}else{   hata[i] =new Images(240,90,20,20,"flag.jpg");
+						 	 var round = new Images(20,70,30,30,"round.jpg");break;
+		}	}	}	}
 		//タイムラベル
 
 		//friend、enemyCharabuttonの略,,,配列を宣言
@@ -211,30 +209,6 @@ function ButtonCreate(e,team){
 	});
 }
 
-//消えるときの動作
-
-function dead(){
-	if(friendCharabox[0]){
-		core.rootScene.removeChild(friendCharaBox[0]);
-		friendCharaCount--;
-		delete friendCharaBox[0];}
-	if(friendCharabox[1]){
-		core.rootScene.removeChild(friendCharaBox[1]);
-		Count--;
-		delete friendCharaBox[1];}
-	if(box[2]){
-		core.rootScene.removeChild(friendCharaBox[2]);
-		Count--;
-		delete friendCharaBox[2];}
-	if(box[3]){
-		core.rootScene.removeChild(friendCharaBox[3]);
-		Count--;
-		delete friendCharaBox[3];}
-	if(box[4]){
-		core.rootScene.removeChild(friendCharaBox[4]);
-		Count--;
-		delete friendCharaBox[4];}
-}
 //-------------------------------------------------------------------------------------------------
 	}
 	core.debug();
@@ -268,7 +242,7 @@ function CharaimgCreate(e,x,y,w,h,img,Corename,team){
 		if(this.flag == 0){				//flag==0ならばx移動　１ならばy移動
 		if(team == 0)this.Spd =10;		//これがなければyが‐移動している時、x座標移動すると後ろに行く
 		if(team == 1)this.Spd =-10;
-		this.x   +=this.Spd;
+		this.x   +=5*this.Spd/Corename.fps;
 		if(this.y >=120 && this.y <=210 && this.x >= 90){this.y = 130;}
 		if (this.y >=210 && this.y <=300 && this.x >= 90){this.y = 220;}
 		if (this.y >=300 && this.y <=390 && this.x >= 90){this.y = 310;}
