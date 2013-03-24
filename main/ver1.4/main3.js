@@ -108,25 +108,30 @@ pose.addChild(windowscene);
 			this.x=x;
 			this.y=y;
 			this.toggle=0;
+			this.rem=true;
 			this.backgroundColor="#ff0000";
-				this.frame=[0,1,0,2];
-				CharaParam(this,0);
-				this.on('enterframe',function(){
+			this.frame=[0,1,0,2];
+			CharaParam(this,0);
+			this.on('enterframe',function(){
 				//	this.y={0:220,2:310}[this.toggle];
 				//	if(this.toggle==1){this.tl.moveBy(130,130,15)};
-					Charamove(this,core);
-					Crush(this,Charas,0,1,core,friendcount);
-					console.log(this.y+""+this.x);
-for(j in Charas[0]){
-				if(Charas[0][j].hp<=0){
-					friendcount--;
-				//	console.log("f"+friendcount);
-					core.rootScene.removeChild(Charas[0][j]);
-					delete Charas[0][j];
+				Charamove(this,core);
+				Crush(this,Charas,0,1,core,friendcount);
+				//	console.log(this.y+""+this.x);
+				for(j in Charas[0]){
+					if(Charas[0][j].hp<=0){
+						friendcount--;
+						//	console.log("f"+friendcount);
+						Charas[0][j].tl.fadeOut(3).moveTo(9999,9999,1).then(function(){this.rem=false;});
+					}
+if(!Charas[0][j].rem&&Charas[0][j].hp<=0){
+	Charas[0][j].rem=true;
+	core.rootScene.removeChild(Charas[0][j]);
+							//孤児ノード参照を止めるために、表示を消して移動処理後にremoveされるよう調整
+							delete Charas[0][j];
+						}
 				}
-			}
-		
-				});
+			});
 			/*	this.on('touchstart',function(){
 				//	console.log(this.toggle);
 		                this.backgroundColor="#ff0000";
@@ -152,11 +157,14 @@ else{this.y=310;}
 				this.x=x;
 				this.y=y;
 				this.toggle=0;
+				this.rem=true;
 				this.scaleX=1;
 				this.frame=[0,1,0,2];
 				CharaParam(this,6);
 				this.on('enterframe',function(){
-//if(this.age%rand(20)==0&&this.age%10==0&&this.age>=30){this.toggle={0:1,1:2,2:3}[this.toggle];}
+if(this.age%(50-rand(10))==0&&this.age>=30)
+				{this.toggle={0:1,1:2,2:3,3:0}[this.toggle];
+					vmove(this,this.toggle);}
 					Charamove(this,core);
 				//	console.log("hit");
 					Crush(this,Charas,1,0,core,enemycount);
@@ -164,9 +172,16 @@ for(j in Charas[1]){
 				if(Charas[1][j].hp<=0){
 					enemycount--;
 			//		console.log("e"+enemycount);
-					core.rootScene.removeChild(Charas[1][j]);
-					delete Charas[1][j];
-				}
+					Charas[1][j].tl.fadeOut(3).moveTo(-9999,-9999,1).then(function(){this.rem=false;});
+							}
+		if(!Charas[1][j].rem){
+			Charas[1][j].rem=true;
+			core.rootScene.removeChild(Charas[1][j]);
+					//座標を予め動かしておくことで孤児ノードを参照させない！
+					//そうすると復帰出来ない別バグが
+				//	core.rootScene.removeChild(Charas[1][j]);
+					delete Charas[1][j];}
+
 			}
 				});
 				core.rootScene.addChild(this);
@@ -320,7 +335,7 @@ if(enemyround==2){alert('you lose..');core.end();}
 		}
 
 	};
-	core.start();
+	core.debug();
 };
 //クラス生成を一括の関数化(this,幅、高さ、画像ファイル名、core)として使用
 function ClassimgCreate(e,w,h,img,Corename){
@@ -374,4 +389,4 @@ function remove(e,Corename){
 function rand(n){
 	return Math.floor(Math.random()*(n+1));}
 function vmove(e,a){
-	e.tl.moveBy(0,{0:90,1:-90,2:-90,3:90}[a],10);}
+	e.tl.moveBy(0,{0:-90,1:-90,2:90,3:90}[a],10);}
