@@ -364,7 +364,7 @@ function Charamove(e,Corename){
 }
 function Crush(e,array,you,target,Corename,countname){
 	for(var i in array[target]){
-		if(e.within(array[target][i],10)){
+		if(array[target].within(this,10)){
 			console.log(array[target][i]);
 			e.hp-=array[target][i].atk-(e.def);
 			/*for(j in array[you]){
