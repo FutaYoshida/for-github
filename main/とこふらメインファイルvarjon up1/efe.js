@@ -10,7 +10,7 @@ core.preload('skill1.png','skill2.png');
 core.preload('flag.jpg','round.jpg');
 core.preload('bearteam.jpg','blik.jpg');
 core.preload('waiticon.gif');
-core.preload('test.png');
+core.preload('test1.gif');
 
 core.fps =5;
 var LIMIT_TIME = 60;
@@ -27,7 +27,7 @@ var bear =Class.create(Sprite,{
 	this.on("enterframe",function(){
 	this.x+=10
 	if(this.within(enemybear,10)){
-	var efe = new efect(this.x,this.y);	
+	var efe = new efect(this.x-10,this.y-32);	
 
 		this.frame=3;
 		this.tl.moveBy(-150,0,5).then(function(){this.frame=defaultframe});
@@ -56,12 +56,12 @@ var enemy =Class.create(Sprite,{
 
 var efect = Class.create(Sprite,{
 	initialize:function(x,y){
-	ClassimgCreate(this,240,240,"test.png",core);
+	ClassimgCreate(this,50,44,"test1.gif",core);
 	this.x=x;
 	this.y=y;
-	this.frame=[0,1,2,3,4];
+	this.frame=[0,1,2,3];
 	this.on("enterframe",function(){
-	if(this.frame==4){
+	if(this.frame==3){
 	this.remove();
  }});
 }});
