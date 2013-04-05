@@ -72,16 +72,14 @@ if (typeof Function.prototype.bind !== 'function') {
 }
 
 window.getTime = (function() {
-    var origin;
+
     if (window.performance && window.performance.now) {
-        origin = Date.now();
         return function() {
-            return origin + window.performance.now();
+            return window.performance.now();
         };
     } else if (window.performance && window.performance.webkitNow) {
-        origin = Date.now();
         return function() {
-            return origin + window.performance.webkitNow();
+            return window.performance.webkitNow();
         };
     } else {
         return Date.now;
@@ -162,10 +160,7 @@ var enchant = function(modules) {
         }
     }(enchant, ''));
 
-    // issue 185
-    if (enchant.Class.getInheritanceTree(window.Game).length <= enchant.Class.getInheritanceTree(window.Core).length) {
-        window.Game = window.Core;
-    }
+    window.Game = window.Core;
 
     if (modules != null && modules.length) {
         throw new Error('Cannot load module: ' + modules.join(', '));
@@ -996,8 +991,7 @@ enchant.EventTarget = enchant.Class.create({
             bar.image = image;
             var progress = 0, _progress = 0;
             this.addEventListener('progress', function(e) {
-                // avoid #167 https://github.com/wise9/enchant.js/issues/177
-                progress = e.loaded / e.total * 1.0;
+                progress = e.loaded / e.total;
             });
             bar.addEventListener('enterframe', function() {
                 _progress *= 0.9;
@@ -1006,8 +1000,6 @@ enchant.EventTarget = enchant.Class.create({
                 image.context.fillRect(border, 0, (barWidth - border * 2) * _progress, barHeight);
             });
             this.loadingScene.addChild(bar);
-
-            this._calledTime = 0;
 
             this._mousedownID = 0;
             this._surfaceID = 0;
@@ -1192,10 +1184,7 @@ enchant.EventTarget = enchant.Class.create({
                     var core = enchant.Core.instance;
                     var evt = new enchant.Event(enchant.Event.TOUCH_END);
                     evt._initPosition(e.pageX, e.pageY);
-                    var target = core._touchEventTarget[core._mousedownID];
-                    if (target) {
-                        target.dispatchEvent(evt);
-                    }
+                    core._touchEventTarget[core._mousedownID].dispatchEvent(evt);
                     delete core._touchEventTarget[core._mousedownID];
                 }, false);
             }
@@ -1258,9 +1247,11 @@ enchant.EventTarget = enchant.Class.create({
 
                         var type = req.getResponseHeader('Content-Type') || '';
                         if (type.match(/^image/)) {
-                            core.assets[src] = enchant.Surface.load(src, callback);
+                            core.assets[src] = enchant.Surface.load(src);
+                            core.assets[src].addEventListener('load', callback);
                         } else if (type.match(/^audio/)) {
-                            core.assets[src] = enchant.Sound.load(src, type, callback);
+                            core.assets[src] = enchant.Sound.load(src, type);
+                            core.assets[src].addEventListener('load', callback);
                         } else {
                             core.assets[src] = req.responseText;
                             callback();
@@ -1279,18 +1270,16 @@ enchant.EventTarget = enchant.Class.create({
          */
         start: function() {
             var onloadTimeSetter = function() {
-                this.frame = 0;
+                this.currentTime = 0;
+                this._nextTime = 0;
                 this.removeEventListener('load', onloadTimeSetter);
+                this.running = true;
+                this.ready = true;
+                this._requestNextFrame();
             };
             this.addEventListener('load', onloadTimeSetter);
 
-            this.currentTime = window.getTime();
-            this.running = true;
-            this.ready = true;
-            this._requestNextFrame(0);
-
-            if (!this._activated) {
-                this._activated = true;
+            if (!this._activated && this._assets.length) {
                 if (enchant.ENV.SOUND_ENABLED_ON_MOBILE_SAFARI && !core._touched &&
                     (navigator.userAgent.indexOf('iPhone OS') !== -1 ||
                     navigator.userAgent.indexOf('iPad') !== -1)) {
@@ -1313,8 +1302,8 @@ enchant.EventTarget = enchant.Class.create({
                     core.pushScene(scene);
                     return;
                 }
-            }
-            if (this._assets.length) {
+
+                this._activated = true;
 
                 var o = {};
                 var assets = this._assets.filter(function(asset) {
@@ -1333,10 +1322,10 @@ enchant.EventTarget = enchant.Class.create({
                         }
                     };
 
-                this.pushScene(this.loadingScene);
                 for (var i = 0; i < len; i++) {
                     this.load(assets[i], loadFunc);
                 }
+                this.pushScene(this.loadingScene);
             } else {
                 this.dispatchEvent(new enchant.Event('load'));
             }
@@ -1359,27 +1348,37 @@ enchant.EventTarget = enchant.Class.create({
         /**
          * @private
          */
-        _requestNextFrame: function(delay) {
+        _requestNextFrame: function() {
             if (!this.ready) {
                 return;
             }
-            setTimeout(function() {
-                var core = enchant.Core.instance;
-                core._calledTime = window.getTime();
-                window.requestAnimationFrame(core._callTick);
-            }, delay);
+            var core = this;
+            window.requestAnimationFrame(core._checkTick);
         },
         /**
          * @private
          */
-        _callTick: function(time) {
-            enchant.Core.instance._tick(time);
+        _checkTick: function(now) {
+            var core = enchant.Core.instance;
+            if (core._nextTime < now) {
+                // if enough time has passed, execute _tick
+                core._tick(now);
+            } else {
+                // if enough time has not passed yet, request next frame
+                window.requestAnimationFrame(core._checkTick);
+            }
         },
-        _tick: function(time) {
+        _tick: function(now) {
             var e = new enchant.Event('enterframe');
-            var now = window.getTime();
-            var elapsed = e.elapsed = now - this.currentTime;
+            if (this.currentTime === 0) {
+                e.elapsed = 0;
+            } else {
+                e.elapsed = now - this.currentTime;
+            }
 
+            // frame fragment time, will be used in _checkTick
+            this._nextTime = now + 1000 / this.fps;
+            this.currentTime = now;
             this._actualFps = e.elapsed > 0 ? (1000 / e.elapsed) : 0;
 
             var nodes = this.currentScene.childNodes.slice();
@@ -1399,8 +1398,7 @@ enchant.EventTarget = enchant.Class.create({
 
             this.dispatchEvent(new enchant.Event('exitframe'));
             this.frame++;
-            this.currentTime = now;
-            this._requestNextFrame(1000 / this.fps - (now - this._calledTime));
+            this._requestNextFrame();
         },
         getTime: function() {
             return window.getTime();
@@ -1431,10 +1429,10 @@ enchant.EventTarget = enchant.Class.create({
             if (this.ready) {
                 return;
             }
-            this.currentTime = window.getTime();
+            this.currentTime = 0;
             this.ready = true;
             this.running = true;
-            this._requestNextFrame(0);
+            this._requestNextFrame();
         },
 
         /**
@@ -1580,7 +1578,8 @@ enchant.EventTarget = enchant.Class.create({
             enchant.Core._loadFuncs['gif'] =
                 enchant.Core._loadFuncs['png'] =
                     enchant.Core._loadFuncs['bmp'] = function(src, callback) {
-                        this.assets[src] = enchant.Surface.load(src, callback);
+                        this.assets[src] = enchant.Surface.load(src);
+                        this.assets[src].addEventListener('load', callback);
                     };
     enchant.Core._loadFuncs['mp3'] =
         enchant.Core._loadFuncs['aac'] =
@@ -3327,12 +3326,8 @@ enchant.DomManager = enchant.Class.create({
         if(!node.__styleStatus) {
             node.__styleStatus = {};
         }
-        if (node.width !== null) {
-            node._style.width = node.width + 'px';
-        }
-        if (node.height !== null) {
-            node._style.height = node.height + 'px';
-        }
+        node._style.width = node.width + 'px';
+        node._style.height = node.height + 'px';
         node._style.opacity = node._opacity;
         node._style['background-color'] = node._backgroundColor;
         if (typeof node._visible !== 'undefined') {
@@ -3564,9 +3559,12 @@ enchant.DomLayer = enchant.Class.create(enchant.Group, {
         node._dirty = false;
     },
     _determineEventTarget: function() {
-        var target = this._touchEventTarget;
-        this._touchEventTarget = null;
-        return (target === this) ? null : target;
+        if (this._touchEventTarget) {
+            if (this._touchEventTarget !== this) {
+                return this._touchEventTarget;
+            }
+        }
+        return null;
     }
 });
 
@@ -3638,8 +3636,6 @@ enchant.CanvasLayer = enchant.Class.create(enchant.Group, {
         this._element.width = core.width;
         this._element.height = core.height;
         this._element.style.position = 'absolute';
-        // issue 179
-        this._element.style.left = this._element.style.top = '0px';
 
         this._detect = document.createElement('canvas');
         this._detect.width = core.width;
@@ -3792,7 +3788,6 @@ enchant.CanvasLayer = enchant.Class.create(enchant.Group, {
             }
         }
         if (node._clipping) {
-            ctx.beginPath();
             ctx.rect(0, 0, width, height);
             ctx.clip();
         }
@@ -4324,9 +4319,7 @@ enchant.Surface.load = function(src, callback) {
         _element: { value: image }
     });
     enchant.EventTarget.call(surface);
-    if (typeof callback === 'function') {
-        surface.addEventListener('load', callback);
-    }
+    image.src = src;
     image.onerror = function() {
         throw new Error('Cannot load an asset: ' + image.src);
     };
@@ -4335,7 +4328,6 @@ enchant.Surface.load = function(src, callback) {
         surface.height = image.height;
         surface.dispatchEvent(new enchant.Event('load'));
     };
-    image.src = src;
     return surface;
 };
 
