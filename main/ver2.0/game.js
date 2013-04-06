@@ -2,7 +2,7 @@ enchant();
 window.onload= function(){
 	var core = new Core(640,480);
 	core.preload('title.jpg','layout02.jpg','bearteam.jpg','blik.jpg','waiticon.gif','char.gif','char2.gif','flag.jpg','round.jpg');
-    core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3','dodon.mp3','rakka.mp3','bear_fadeout_01.mp3','pu.mp3','po.mp3');
+    core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3','dodon.mp3','rakka.mp3','bear_fadeout_01.mp3','pu.mp3','po.mp3','flag_gong.mp3','re_charge_01.mp3','mode_cancell_01.mp3');
 	core.fps=5;
 	core.onload=function(){
 		/*シーン設定*/
@@ -37,7 +37,8 @@ window.onload= function(){
 				addC(this.gauge2,game);
 				addC(this.marker,game);
 				this.gauge2.on('enterframe',function(){
-					if(this.height<40)this.height++;
+					if(this.height<40){this.height++;}
+//					else if(this.height!=40){core.assets['pu.mp3'].play();}
 				});
 				this.on('enterframe',function(){
 					if(this.counter<40)this.counter++;
@@ -189,6 +190,7 @@ this.x-=5;});
 		/*タイトル画面の構成物*/
 		var titleG=new Images(0,0,640,480,"title.jpg");
 		titleG.on('touchstart',function(){
+			core.assets['mode_cancell_01.mp3'].play();
 			core.pushScene(game);
 		});
 		addC(titleG,Title);
@@ -212,6 +214,7 @@ this.x-=5;});
 		team[0].on('enterframe',function(){
 			for(i=0;i<friendcount;i++){
 				if(friendflag[i]==undefined){
+				core.assets['re_charge_01.mp3'].play();
 					if(i<5){
 						friendflag[i]=new Flag(120+(i*30),70,i);addC(friendflag[i],game);}
 					else if(i<10){
@@ -252,6 +255,7 @@ this.x-=5;});
 		team[1].on('enterframe',function(){
 			for(i=0;i<enemycount;i++){
 				if(enemyflag[i]==undefined){
+				core.assets['flag_gong.mp3'].play();
 					if(i<5){
 						enemyflag[i]=new Flag(380+(i*30),70,i);addC(enemyflag[i],game);}
 					else if(i<10){
@@ -331,7 +335,7 @@ timer.on('enterframe',function(){
 addC(timer,game);*/
 		//ゲーム開始時はタイトル画面を出す
 		core.pushScene(Title);
-		game.rootScene.on('enterframe',function(){
+		core.rootScene.on('enterframe',function(){
 			core.assets['tengoku_to_jigoku_full.mp3'].play();});
 	};
 	core.debug();
