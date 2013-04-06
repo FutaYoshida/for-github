@@ -4,6 +4,7 @@ window.onload= function(){
 	core.fps=10;
 	core.preload('char.gif','char2.gif','kgen.png');
 	core.preload('layout.jpg','bearteam.jpg','blik.jpg','flag.jpg','round.jpg');
+    core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3');
 
 	core.onload=function(){
 		core.makescene=function(){
@@ -333,7 +334,11 @@ if(enemyround==2){alert('you lose..');core.end();}
 			fri[i]=new FriGen(10,130+(50*i));
 			ene[i]=new EneGen(570,130+(50*i));
 		}
-
+		core.rootScene.on('enterframe',function(){
+			core.assets['tengoku_to_jigoku_full.mp3'].play();});
+//		core.rootScene.on("enterframe",function(){
+//			sound(core,"tengoku_to_jigoku_full.mp3");
+		});
 	};
 	core.debug();
 };
@@ -390,3 +395,5 @@ function rand(n){
 	return Math.floor(Math.random()*(n+1));}
 function vmove(e,a){
 	e.tl.moveBy(0,{0:-90,1:-90,2:90,3:90}[a],10);}
+function sound(corename,sound){
+	corename.assets[sound].clone().play();}

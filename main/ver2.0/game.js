@@ -2,6 +2,7 @@ enchant();
 window.onload= function(){
 	var core = new Core(640,480);
 	core.preload('title.jpg','layout02.jpg','bearteam.jpg','blik.jpg','waiticon.gif','char.gif','char2.gif','flag.jpg','round.jpg');
+    core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3','dodon.mp3','rakka.mp3','bear_fadeout_01.mp3','pu.mp3','po.mp3');
 	core.fps=5;
 	core.onload=function(){
 		/*シーン設定*/
@@ -58,6 +59,8 @@ window.onload= function(){
 					if(this.counter>=40){
 						for(i=0;i<5;i++){
 							if(friends[i]==undefined){
+								//core.assets['po.mp3'].play();
+								core.assets['pu.mp3'].play();
 								friends[i]=new Funit(this.marker.x,this.marker.y,i);
 								this.counter=0;	this.gauge2.height=0;
 								break;}
@@ -118,6 +121,7 @@ window.onload= function(){
 			    delete friends[this.no];
 		    },
 		    crush:function(){
+			core.assets['dodon.mp3'].play();
 			    this.frame=3;
 			    this.hp-=15;
 			    this.tl.moveBy(-200,0,4).then(function(){if(this.hp<=0){this.fdout();}
@@ -126,6 +130,8 @@ window.onload= function(){
 			    
 		    },
 		    fdout:function(){
+			core.assets['bear_fadeout_01.mp3'].play();
+//			core.assets['rakka.mp3'].play();
 		    this.tl.fadeOut(5).then(function(){this.remove();});
 		    }
 		
@@ -325,6 +331,8 @@ timer.on('enterframe',function(){
 addC(timer,game);*/
 		//ゲーム開始時はタイトル画面を出す
 		core.pushScene(Title);
+		game.rootScene.on('enterframe',function(){
+			core.assets['tengoku_to_jigoku_full.mp3'].play();});
 	};
 	core.debug();
 };
