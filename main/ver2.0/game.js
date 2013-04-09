@@ -2,7 +2,7 @@ enchant();
 window.onload= function(){
 	var core = new Core(640,480);
 	core.preload('title.jpg','layout02.jpg','bearteam.jpg','blik.jpg','waiticon.gif','char.gif','char2.gif','flag.jpg','round.jpg');
-    core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3','dodon.mp3','rakka.mp3','bear_fadeout_01.mp3','pu.mp3','po.mp3','flag_gong.mp3','re_charge_01.mp3','mode_cancell_01.mp3');
+    core.preload('crush_01.wav','tengoku_to_jigoku_full.mp3','dodon.mp3','rakka.mp3','bear_fadeout_01.mp3','pu.mp3','po.mp3','flag_gong.mp3','re_charge_01.mp3','mode_cancell_01.mp3','rakka.wav');
 	core.fps=5;
 	core.onload=function(){
 		/*シーン設定*/
@@ -132,7 +132,7 @@ window.onload= function(){
 		    },
 		    fdout:function(){
 			core.assets['bear_fadeout_01.mp3'].play();
-//			core.assets['rakka.mp3'].play();
+			core.assets['rakka.wav'].play();
 		    this.tl.fadeOut(5).then(function(){this.remove();});
 		    }
 		
