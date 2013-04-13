@@ -20,6 +20,7 @@ window.onload= function(){
 	var enemycount=0;
 	var friendround=0;
 	var enemyround=0;
+	var pra=0;
 		/*クラス設定*/ 
 		var Generater=Class.create(Sprite,{
 			initialize:function(x,y){
@@ -46,7 +47,7 @@ window.onload= function(){
 						}
 		});
 		var FriGen=Class.create(Generater,{
-			initialize:function(x,y){
+			initialize:function(x,y,pra){
 				Generater.call(this,x,y);
 				this.on('touchmove',function(e){
 					if(e.y<220){this.marker.y=130;}
@@ -57,6 +58,7 @@ window.onload= function(){
 				});
 
 				this.on('touchend',function(){
+console.log(pra);
 					if(this.counter>=40){
 						for(i=0;i<5;i++){
 							if(friends[i]==undefined){
@@ -73,7 +75,7 @@ window.onload= function(){
 			}
 		});
 		var EneGen=Class.create(Generater,{
-			initialize:function(x,y){
+			initialize:function(x,y,pra){
 				Generater.call(this,x,y);
 				this.frame=1;
 				this.on('enterframe',function(){
@@ -103,9 +105,9 @@ window.onload= function(){
 				Unit.call(this,x,y,0);
 				this.no=no;
 
-				CharaParam(this,0);
+				CharaParam(this,pra);
 				this.on('enterframe',function(){
-					this.x+=5;
+					this.x+=this.spd;
 					for(var i in enemies){
 						if(enemies[i].within(this,10)){
 						enemies[i].crush();	
@@ -142,13 +144,12 @@ window.onload= function(){
 			initialize:function(x,y,no){
 				Unit.call(this,x,y,1);
 				this.no=no;
-
-				CharaParam(this,0);
+				CharaParam(this,pra);
 			this.on('touchstart',function(){
 				this.remove();
 			});
 this.on('enterframe',function(){
-this.x-=5;});
+this.x-=this.spd;});
 			},
 		    remove:function(){
 			    game.removeChild(this);
@@ -301,8 +302,9 @@ this.x-=5;});
 		var fri=[];
 		var ene=[];
 		for(i=0;i<5;i++){
-			fri[i]=new FriGen(10,130+(50*i)); addC(fri[i],game);
-			ene[i]=new EneGen(570,130+(50*i));addC(ene[i],game);
+			fri[i]=new FriGen(10,130+(50*i),i); addC(fri[i],game);
+			ene[i]=new EneGen(570,130+(50*i),i);addC(ene[i],game);
+		console.log(i);
 		}
 		var friendgoal=new Images(560,120,10,270,"");addC(friendgoal,game);
 		friendgoal.backgroundColor="ee00ee";
