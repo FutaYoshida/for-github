@@ -105,6 +105,8 @@ console.log(pra);
 			initialize:function(x,y,no){
 				Unit.call(this,x,y,0);
 				this.no=no;
+				this.dmg=0;
+				//これで相手の攻撃力を拾う
 				this.pra=fri[i].pra;
 				CharaParam(this,this.pra);
 				console.log(this.pra);
@@ -112,6 +114,8 @@ console.log(pra);
 					this.x+=this.spd;
 					for(var i in enemies){
 						if(enemies[i].within(this,10)){
+							this.dmg=enemies[i].atk;
+							enemies[i].dmg=this.atk;
 						enemies[i].crush();	
 						this.crush();	
 						}
@@ -129,7 +133,7 @@ console.log(pra);
 		    crush:function(){
 			core.assets['dodon.mp3'].play();
 			    this.frame=3;
-			    this.hp-=enemies[i].atk-this.def;
+			    this.hp-=(this.dmg-this.def);
 			    this.tl.moveBy(-200,0,4).then(function(){if(this.hp<=0){this.fdout();}
 				    else{this.frame=[0,1,0,2]}
 			    });
@@ -146,6 +150,7 @@ console.log(pra);
 			initialize:function(x,y,no){
 				Unit.call(this,x,y,1);
 				this.no=no;
+				this.dmg=0;
 				CharaParam(this,pra);
 			this.on('touchstart',function(){
 				this.remove();
@@ -159,7 +164,7 @@ this.x-=this.spd;});
 		    },
 		    crush:function(){
 			    this.frame=3;
-			    this.hp-=friends[i].atk-this.def;
+			    this.hp-=(this.dmg-this.def);
 			    this.tl.moveBy(200,0,4).then(function(){if(this.hp<=0){this.fdout();}
 				    else{this.frame=[0,1,0,2];}
 			    }
