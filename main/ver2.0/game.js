@@ -102,7 +102,8 @@ window.onload= function(){
 			initialize:function(x,y,no){
 				Unit.call(this,x,y,0);
 				this.no=no;
-				this.hp=30;
+
+				CharaParam(this,0);
 				this.on('enterframe',function(){
 					this.x+=5;
 					for(var i in enemies){
@@ -124,7 +125,7 @@ window.onload= function(){
 		    crush:function(){
 			core.assets['dodon.mp3'].play();
 			    this.frame=3;
-			    this.hp-=15;
+			    this.hp-=enemies[i].atk-this.def;
 			    this.tl.moveBy(-200,0,4).then(function(){if(this.hp<=0){this.fdout();}
 				    else{this.frame=[0,1,0,2]}
 			    });
@@ -141,7 +142,8 @@ window.onload= function(){
 			initialize:function(x,y,no){
 				Unit.call(this,x,y,1);
 				this.no=no;
-				this.hp=30;
+
+				CharaParam(this,0);
 			this.on('touchstart',function(){
 				this.remove();
 			});
@@ -154,7 +156,7 @@ this.x-=5;});
 		    },
 		    crush:function(){
 			    this.frame=3;
-			    this.hp-=15;
+			    this.hp-=friends[i].atk-this.def;
 			    this.tl.moveBy(200,0,4).then(function(){if(this.hp<=0){this.fdout();}
 				    else{this.frame=[0,1,0,2];}
 			    }
@@ -350,3 +352,14 @@ function addC(e,Scenename){
 }
 function  rand(n){
 	return Math.floor(Math.random()*(n+1));}
+//キャラステータス
+function CharaParam(e,Charano){
+ var Spd=[10,20,5,10,10,5,-10,-20,-5,-10,-10];
+ var Atk=[20,20,20,30,30,20,20,20,20,30,30,20];
+ var Hp=[30,20,60,40,10,20,30,20,60,40,10,20];
+ var Def=[5,5,10,7.5,5,5,5,5,10,7.5,5,5];
+ e.spd=Spd[Charano];
+ e.atk=Atk[Charano];
+ e.def=Def[Charano];
+ e.hp=Hp[Charano];
+}
