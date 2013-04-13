@@ -78,6 +78,7 @@ console.log(pra);
 		var EneGen=Class.create(Generater,{
 			initialize:function(x,y,pra){
 				Generater.call(this,x,y);
+				this.pra=pra;
 				this.frame=1;
 				this.on('enterframe',function(){
 					if(this.counter>=40&&this.age%(50-rand(10))==0){
@@ -132,10 +133,10 @@ console.log(pra);
 		    },
 		    crush:function(){
 			core.assets['dodon.mp3'].play();
-			    this.frame=3;
+			    this.frame=this.outframe;
 			    this.hp-=(this.dmg-this.def);
 			    this.tl.moveBy(-200,0,4).then(function(){if(this.hp<=0){this.fdout();}
-				    else{this.frame=[0,1,0,2]}
+				    else{this.frame=[(0+this.fra),(1+this.fra),(0+this.fra),(2+this.fra)]}
 			    });
 			    
 		    },
@@ -151,7 +152,9 @@ console.log(pra);
 				Unit.call(this,x,y,1);
 				this.no=no;
 				this.dmg=0;
-				CharaParam(this,pra);
+				this.pra=ene[i].pra;
+				CharaParam(this,this.pra);
+				console.log(ene[i].pra);
 			this.on('touchstart',function(){
 				this.remove();
 			});
@@ -163,10 +166,10 @@ this.x-=this.spd;});
 			    delete enemies[this.no];
 		    },
 		    crush:function(){
-			    this.frame=3;
+			    this.frame=this.outframe;
 			    this.hp-=(this.dmg-this.def);
 			    this.tl.moveBy(200,0,4).then(function(){if(this.hp<=0){this.fdout();}
-				    else{this.frame=[0,1,0,2];}
+				    else{this.frame=[(0+this.fra),(1+this.fra),(0+this.fra),(2+this.fra)];}
 			    }
 				    );
 		    },
@@ -367,8 +370,13 @@ function CharaParam(e,Charano){
  var Atk=[20,20,20,30,30,20,20,20,20,30,30,20];
  var Hp=[30,20,60,40,10,20,30,20,60,40,10,20];
  var Def=[5,5,10,7.5,5,5,5,5,10,7.5,5,5];
+ var frame=[0,4,8,0,4];
+ var outframe=[3,7,11,3,7];
  e.spd=Spd[Charano];
  e.atk=Atk[Charano];
  e.def=Def[Charano];
  e.hp=Hp[Charano];
+ e.fra=frame[Charano];
+ e.frame=[(0+e.fra),(1+e.fra),(0+e.fra),(2+e.fra)];
+ e.outframe=outframe[Charano];
 }
