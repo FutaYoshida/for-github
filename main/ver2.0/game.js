@@ -49,6 +49,7 @@ window.onload= function(){
 		var FriGen=Class.create(Generater,{
 			initialize:function(x,y,pra){
 				Generater.call(this,x,y);
+				this.pra=pra;
 				this.on('touchmove',function(e){
 					if(e.y<220){this.marker.y=130;}
 					else if(e.y<310){this.marker.y=220;}
@@ -104,8 +105,9 @@ console.log(pra);
 			initialize:function(x,y,no){
 				Unit.call(this,x,y,0);
 				this.no=no;
-
-				CharaParam(this,pra);
+				this.pra=fri[i].pra;
+				CharaParam(this,this.pra);
+				console.log(this.pra);
 				this.on('enterframe',function(){
 					this.x+=this.spd;
 					for(var i in enemies){
