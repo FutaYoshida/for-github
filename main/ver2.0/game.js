@@ -1,7 +1,7 @@
 enchant();
 window.onload= function(){
 	var core = new Core(640,480);
-	core.preload('title.jpg','layout02.jpg','bearteam.jpg','blik.jpg','waiticon.gif','char.gif','char2.gif','flag.jpg','round.jpg');
+	core.preload('title.jpg','layout02.jpg','bearteam.jpg','blik.jpg','waiticon.gif','char.gif','char2.gif','flag.jpg','round.jpg','kumahand2.png');
 	core.fps=5;
 	core.onload=function(){
 		/*シーン設定*/
@@ -30,8 +30,8 @@ window.onload= function(){
 				this.gauge2=new Images(x+60,y,10,40,"");
 				this.gauge2.backgroundColor="#0f0";
 				this.counter=40;
-				this.marker=new Images(x,y,60,50,"");
-				this.marker.backgroundColor="00F";
+				this.marker=new Images(x,y,40,40,"kumahand2.png");
+			//	this.marker.backgroundColor="00F";
 				addC(this.gauge,game);
 				addC(this.gauge2,game);
 				addC(this.marker,game);
